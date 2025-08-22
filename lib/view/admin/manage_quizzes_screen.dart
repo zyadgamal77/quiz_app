@@ -71,7 +71,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
   Widget _bulidTitle() {
     String? categoyId = _selectedCategoryId ?? widget.categoryId;
     if (categoyId == null) {
-      return Text("All Quizzes", style: TextStyle(fontWeight: FontWeight.bold));
+      return Center(child: Text("All Quizzes", style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.textPrimaryColor)));
     }
     return StreamBuilder<DocumentSnapshot>(
       stream: _firestore.collection("categories").doc(categoyId).snapshots(),
@@ -87,7 +87,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
           categoyId,
           snapshot.data!.data() as Map<String, dynamic>,
         );
-        
+
         return Text(
           category.name,
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -102,18 +102,17 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
       appBar: AppBar(
         backgroundColor: AppTheme.backgroundColor,
         title: _bulidTitle(),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.add_circle_outline,color: AppTheme.primaryColor,),
-            onPressed: (){
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add_circle_outline, color: AppTheme.primaryColor),
+            onPressed: () {
               Navigator.push(
-                context, MaterialPageRoute(
-                builder:(context) => AddCategoriesScreens(),
-              ),
+                context,
+                MaterialPageRoute(builder: (context) => AddCategoriesScreens()),
               );
-           }
-           ),
-      ],
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -124,13 +123,12 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
               decoration: InputDecoration(
                 fillColor: Colors.white,
                 hintText: "Search Quizzes",
-               prefixIcon: Icon(Icons.search),
+                prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-
               ),
-              onChanged: (value){
+              onChanged: (value) {
                 setState(() {
                   _searchQuery = value.toLowerCase();
                 });
@@ -142,31 +140,30 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
             child: DropdownButtonFormField<String>(
               decoration: InputDecoration(
                 fillColor: Colors.white,
-              contentPadding: EdgeInsets.symmetric(vertical: 10 ,horizontal: 18),
-              border: OutlineInputBorder(
-
-              ),
-              hintText:"Category" ,
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 18,
+                ),
+                border: OutlineInputBorder(),
+                hintText: "Category",
               ),
               value: _selectedCategoryId,
-                  items:[
-                    DropdownMenuItem(
-                  child: Text("All Categories"),
-                  value: null,
-                    ),
-                    if(_initialCategory != null &&
-                    _categories.every((c)=> c.id != _initialCategory!.id))
-                      DropdownMenuItem(
-                        child: Text(_initialCategory!.name),
-                        value: _initialCategory!.id,
-                      ),
-                      ..._categories.map((category)=> DropdownMenuItem(
-                        child: Text(category.name),
-                        value: category.id,
-                      ),
-                    ),
-                  ] ,
-              onChanged: (value){
+              items: [
+                DropdownMenuItem(child: Text("All Categories"), value: null),
+                if (_initialCategory != null &&
+                    _categories.every((c) => c.id != _initialCategory!.id))
+                  DropdownMenuItem(
+                    child: Text(_initialCategory!.name),
+                    value: _initialCategory!.id,
+                  ),
+                ..._categories.map(
+                  (category) => DropdownMenuItem(
+                    child: Text(category.name),
+                    value: category.id,
+                  ),
+                ),
+              ],
+              onChanged: (value) {
                 setState(() {
                   _selectedCategoryId = value;
                 });
@@ -176,137 +173,155 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _getQuizStream(),
-              builder: (context, snapshot){
-                if(!snapshot.hasError){
-               return Center(
-               child: Text("An Error Occurred"),);}
-                if(snapshot.hasData){
-                return Center(
-                child: CircularProgressIndicator(
-                color: AppTheme.primaryColor,
-                ),
-                );
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text("An Error Occurred: ${snapshot.error}"));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppTheme.primaryColor,
+                    ),
+                  );
                 }
                 final quizzes = snapshot.data!.docs
-                    .map((doc) => Quiz.fromMap(doc.id as Map<String, dynamic> ,doc.data() as Map<String, dynamic>, )).
-                    where((quiz) => _searchController.text.isEmpty || quiz.title.toLowerCase().contains(_searchQuery))
-                    .toList();
-                 if(quizzes.isEmpty){
-                  return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.quiz_outlined, color: AppTheme.textSecondaryColor, size: 64),
-                      SizedBox(height: 16),
-                      Text(
-                        "No quizzes yet",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.textSecondaryColor,
-                        ),
+                    .map(
+                      (doc) => Quiz.fromMap(
+                        doc.id as Map<String, dynamic>,
+                        doc.data() as Map<String, dynamic>,
                       ),
-                      SizedBox(height: 8,),
-                      ElevatedButton(
-                        onPressed: (){
-                          //Navigate.push(context, MaterialPageRoute(builder: builder )=> AddQuizScreen(categoryId: widget.categoryId),);
+                    )
+                    .where(
+                      (quiz) =>
+                          _searchController.text.isEmpty ||
+                          quiz.title.toLowerCase().contains(_searchQuery),
+                    )
+                    .toList();
+                if (quizzes.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.quiz_outlined,
+                          color: AppTheme.secondaryColor,
+                          size: 64,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          "No quizzes yet",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimaryColor,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: () {
+                            //Navigate.push(context, MaterialPageRoute(builder: builder )=> AddQuizScreen(categoryId: widget.categoryId),);
                           },
-                        child: Text("Add Quiz"),
+                          child: Text("Add Quiz"),
                         ),
                       ],
                     ),
                   );
                 }
                 return ListView.builder(
-                itemCount: quizzes.length,
-                itemBuilder: (context,index){
-                  final Quiz quiz = quizzes[index];
-                  return Card(
-                    margin: EdgeInsets.only(bottom: 12),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.all(16),
-                      leading: Container(
-                        padding: EdgeInsets.all(12),
+                  itemCount: quizzes.length,
+                  itemBuilder: (context, index) {
+                    final Quiz quiz = quizzes[index];
+                    return Card(
+                      margin: EdgeInsets.only(bottom: 12),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(16),
+                        leading: Container(
+                          padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                          color: AppTheme.primaryColor.withOpacity(0.1),
+                            color: AppTheme.primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.quiz_rounded,
+                            color: AppTheme.primaryColor,
+                          ),
+                        ),
+                        title: Text(
+                          quiz.title,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.question_answer_outlined,
+                                  size: 16,
+                                  color: AppTheme.textSecondaryColor,
+                                ),
+                                SizedBox(width: 4),
+                                Text("${quiz.questions.length} Questions"),
+                                SizedBox(width: 16),
+                                Icon(Icons.timer, size: 16),
+                                SizedBox(width: 4),
+                                Text("${quiz.timeLimit} Min"),
+                              ],
                             ),
-                        child: Icon(Icons.quiz_rounded,
-                            color: AppTheme.primaryColor
-                        ),
-                      ),
-                      title: Text(quiz.title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                         ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 8,),
-                          Row(
-                            children: [
-                              Icon(Icons.question_answer_outlined,
-                                size: 16,
-                                color: AppTheme.textSecondaryColor,
-                              ),
-                              SizedBox(width: 4,
-                              ),
-                              Text("${quiz.questions.length} Questions"),
-                              SizedBox(width: 16),
-                              Icon(Icons.timer,
-                              size: 16,
-                              ),
-                              SizedBox(width: 4,
-                              ),
-                              Text("${quiz.timeLimit} Min"),
-                            ],
-                          ),
-                        ],
-                      ),
-                      trailing:PopupMenuButton(itemBuilder: (context)=>[
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: Icon(Icons.edit_outlined,
-                            color: AppTheme.primaryColor,),
-                            title: Text("Edit"),
-                          ),
-                        ),
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.edit_outlined,
-                            color: Colors.redAccent,),
-                           title: Text("Edit"),
-                             ),
-                           ),
                           ],
-                          onSelected: (value )=>
-                        _handleMenuSelection(context,value, quiz),
-                        )
-                    ),
-                  );
-                }
+                        ),
+                        trailing: PopupMenuButton(
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: 'edit',
+                              child: ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: Icon(
+                                  Icons.edit_outlined,
+                                  color: AppTheme.primaryColor,
+                                ),
+                                title: Text("Edit"),
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: 'delete',
+                              child: ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: Icon(
+                                  Icons.delete_outlined,
+                                  color: Colors.redAccent,
+                                ),
+                                title: Text("Edit"),
+                              ),
+                            ),
+                          ],
+                          onSelected: (value) =>
+                              _handleQuizAction(context, value, quiz),
+                        ),
+                      ),
+                    );
+                  },
                 );
-                 },
+              },
             ),
           ),
         ],
       ),
     );
   }
-  Future<void> _handleMenuSelection(
+
+  Future<void> _handleQuizAction(
     BuildContext context,
-    String action,
+    String value,
     Quiz quiz,
   ) async {
-    if (action == 'edit') {
+    if (value == 'edit') {
       //  Navigator.push(context, MaterialPageRoute(builder: (context) => AddQuizScreen(quiz: quiz,),),);
-    } else if (action == 'delete') {
+    } else if (value == 'delete') {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
@@ -315,13 +330,16 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
           actions: [
             TextButton(
               child: Text("Cancel"),
-              onPressed: () { Navigator.pop(context, false);
-                },
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
             ),
             TextButton(
-              child: Text("Delete", style: TextStyle(color: Colors.redAccent)),
-              onPressed: () { Navigator.pop(context, true);
-                },
+              child: Text("Delete",
+                  style: TextStyle(color: Colors.redAccent)),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
             ),
           ],
         ),

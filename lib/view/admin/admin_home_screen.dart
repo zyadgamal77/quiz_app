@@ -83,7 +83,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           );
         }
         if (snapshot.hasError) {
-          return const Center(child: Text('An error occurred'));
+          return  Center(child: Text('An error occurred'));
         }
 
         final Map<String, dynamic> stats = snapshot.data!;
