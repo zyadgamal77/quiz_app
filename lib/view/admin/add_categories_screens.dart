@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+
 import '../../model/category.dart';
 import '../../theme/theme.dart';
 
@@ -48,36 +49,35 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
     try {
       if (widget.category != null) {
         // Update existing category
+        final updatedCategory = widget.category!.copyWith(
+          description: _descriptionController.text.trim(),
+          name: _nameController.text.trim(),
+        );
         await _firestore
             .collection('categories')
             .doc(widget.category!.id)
-            .update({
-              'name': _nameController.text.trim(),
-              'description': _descriptionController.text.trim(),
-              'updatedAt': FieldValue.serverTimestamp(),
-            });
+            .update(updatedCategory.toMap());
+
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Category updated successfully')),
         );
       } else {
         // Add new category
+        final docRef = _firestore.collection('categories').doc();
         final newCategory = Category(
-          id: _firestore.collection('categories').doc().id,
+          id: docRef.id,
           name: _nameController.text.trim(),
           description: _descriptionController.text.trim(),
           createdAt: DateTime.now(),
         );
-        
-        await _firestore
-            .collection('categories')
-            .doc(newCategory.id)
-            .set(newCategory.toMap());
-            
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Category added successfully')),
-          );
-        }
+
+        await docRef.set(newCategory.toMap());
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Category added successfully')),
+        );
       }
       Navigator.pop(context);
     } catch (e) {
