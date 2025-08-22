@@ -168,7 +168,7 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
                       ),
                       alignLabelWithHint: true,
                     ),
-
+                    maxLines: 3,
                     validator: (value) =>
                         value!.isEmpty ? "Please enter category name" : null,
                     textInputAction: TextInputAction.next,
@@ -185,7 +185,6 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
                         color: AppTheme.textPrimaryColor,
                       ),
                     ),
-                    maxLines: 3,
                     validator: (value) =>
                         value!.isEmpty ? "Please enter description name" : null,
                     textInputAction: TextInputAction.next,
