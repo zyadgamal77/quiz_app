@@ -4,11 +4,13 @@ import 'package:quiz_app/model/quiz.dart';
 import '../../model/category.dart';
 import '../../theme/theme.dart';
 import 'add_categories_screens.dart';
+import 'add_quiz_screen.dart';
 
 class ManageQuizzesScreen extends StatefulWidget {
   final String? categoryId;
+  final String? categoryName;
 
-  const ManageQuizzesScreen({super.key, this.categoryId});
+  const ManageQuizzesScreen({super.key, this.categoryId,this.categoryName});
 
   @override
   State<ManageQuizzesScreen> createState() => _ManageQuizzesScreenState();
@@ -69,12 +71,12 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
   }
 
   Widget _bulidTitle() {
-    String? categoyId = _selectedCategoryId ?? widget.categoryId;
-    if (categoyId == null) {
+    String? categoryId = _selectedCategoryId ?? widget.categoryId;
+    if (categoryId == null) {
       return Center(child: Text("All Quizzes", style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.textPrimaryColor)));
     }
     return StreamBuilder<DocumentSnapshot>(
-      stream: _firestore.collection("categories").doc(categoyId).snapshots(),
+      stream: _firestore.collection("categories").doc(categoryId).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData || !snapshot.data!.exists) {
           return Text(
@@ -84,7 +86,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
         }
 
         final category = Category.fromMap(
-          categoyId,
+          categoryId,
           snapshot.data!.data() as Map<String, dynamic>,
         );
 
@@ -108,7 +110,8 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddCategoriesScreens()),
+                MaterialPageRoute(builder: (context) =>
+                    AddQuizScreen(categoryId: widget.categoryId,categoryName:widget.categoryName,)),
               );
             },
           ),
@@ -219,7 +222,11 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                         SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: () {
-                            //Navigate.push(context, MaterialPageRoute(builder: builder )=> AddQuizScreen(categoryId: widget.categoryId),);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  AddQuizScreen(categoryId: widget.categoryId,categoryName: widget.categoryName,)),
+                            );
                           },
                           child: Text("Add Quiz"),
                         ),
