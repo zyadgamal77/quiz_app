@@ -144,14 +144,16 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                       ),
                     ],
                     onSelected: (value) {
-                      // _handleCategoryAction(context,value, category);
+                      _handleCategoryAction(context, value, category);
                     },
                   ),
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ManageQuizzesScreen(categoryId: category.id,)));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ManageQuizzesScreen(categoryId: category.id),
+                      ),
+                    );
                   },
                 ),
               );
@@ -169,9 +171,10 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
   ) async {
     if (action == 'edit') {
       Navigator.push(
-        context, MaterialPageRoute(
-        builder:(context) => AddCategoriesScreens(),
-      ),
+        context, 
+        MaterialPageRoute(
+          builder: (context) => AddCategoriesScreens(category: category),
+        ),
       );
     } else if (action == 'delete') {
       final confirm = await showDialog<bool>(

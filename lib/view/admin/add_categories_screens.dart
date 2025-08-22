@@ -175,7 +175,7 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
                   ),
                   SizedBox(height: 24),
                   TextFormField(
-                    controller: _nameController,
+                    controller: _descriptionController,
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       labelText: " Description",

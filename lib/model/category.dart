@@ -14,7 +14,7 @@ class Category {
 
   factory Category.fromMap(String id, Map<String, dynamic> map) {
     return Category(
-        id: 'id',
+        id: id,
         name: map['name'] ?? "",
         description: map['description'] ?? "",
         createdAt: map['createdAt']?.toDate(),
