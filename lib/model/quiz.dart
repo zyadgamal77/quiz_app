@@ -19,7 +19,7 @@ class Quiz {
     this.updatedAt,
   });
 
-  factory Quiz.fromMap(Map<String, dynamic> map) {
+  factory Quiz.fromMap(Map<String, dynamic> map, Map<String, dynamic> data) {
     return Quiz(
       id: map['id'],
       title: map['title'] ?? "",

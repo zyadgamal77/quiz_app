@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/model/category.dart';
 import '../../theme/theme.dart';
+import 'add_categories_screens.dart';
 import 'manage_quizzes_screen.dart';
 
 class ManageCategoriesScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppTheme.backgroundColor,
         title: Text(
           "Manage Categories",
           style: TextStyle(
@@ -30,7 +32,11 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
           IconButton(
             icon: Icon(Icons.add_circle_outline, color: AppTheme.primaryColor),
             onPressed: () {
-              // Navigator.push(context, MaterialPageRoute(builder: builder) => AddCategoryScreen(),);
+              Navigator.push(
+                context, MaterialPageRoute(
+                builder:(context) => AddCategoriesScreens(),
+              ),
+              );
             },
           ),
         ],
@@ -75,7 +81,11 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                   SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () {
-                      //Navigator.push(context, MaterialPageRoute(builder: builder) => AddCategoryScreen()));
+                      Navigator.push(
+                        context, MaterialPageRoute(
+                        builder:(context) => AddCategoriesScreens(),
+                      ),
+                      );
                     },
                     child: Text(
                       "Add Category",
@@ -158,7 +168,11 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
     Category category,
   ) async {
     if (action == 'edit') {
-      //  Navigator.push(context, MaterialPageRoute(builder: (context) => AddCategoryScreen(category: category,),),);
+      Navigator.push(
+        context, MaterialPageRoute(
+        builder:(context) => AddCategoriesScreens(),
+      ),
+      );
     } else if (action == 'delete') {
       final confirm = await showDialog<bool>(
         context: context,
