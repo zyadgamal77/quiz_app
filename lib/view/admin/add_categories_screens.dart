@@ -66,7 +66,7 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
         // Add new category
         final docRef = _firestore.collection('categories').doc();
         final newCategory = Category(
-          id: _firestore.collection("categories").doc().id,
+          id: docRef.id,
           name: _nameController.text.trim(),
           description: _descriptionController.text.trim(),
           createdAt: DateTime.now(),
@@ -151,45 +151,41 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.textSecondaryColor,
+                      color: AppTheme.textPrimaryColor,
                     ),
                   ),
                   SizedBox(height: 24),
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 20),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 20),
+                      fillColor: Colors.white,
                       labelText: " Category Name",
                       hintText: "Enter category name ",
-                      fillColor: Colors.white,
-
-
                       prefixIcon: Icon(
                         Icons.category_rounded,
-                        color: AppTheme.primaryColor,
+                        color: AppTheme.textPrimaryColor,
                       ),
                       alignLabelWithHint: true,
-
                     ),
-                    maxLines: 2,
+
                     validator: (value) =>
                         value!.isEmpty ? "Please enter category name" : null,
                     textInputAction: TextInputAction.next,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 24),
                   TextFormField(
-                    controller: _descriptionController,
+                    controller: _nameController,
                     decoration: InputDecoration(
-                     fillColor: Colors.white,
+                      fillColor: Colors.white,
                       labelText: " Description",
                       hintText: "Enter category description ",
                       prefixIcon: Icon(
                         Icons.description_rounded,
-                        color: AppTheme.primaryColor,
+                        color: AppTheme.textPrimaryColor,
                       ),
-                      alignLabelWithHint: true,
                     ),
-                    maxLines: 2,
+                    maxLines: 3,
                     validator: (value) =>
                         value!.isEmpty ? "Please enter description name" : null,
                     textInputAction: TextInputAction.next,
@@ -205,19 +201,18 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(
-                               valueColor: AlwaysStoppedAnimation<Color>(
-                                 Colors.black,
-                               ),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                                 strokeWidth: 2,
                               ),
                             )
                           : Text(
-                              widget.category != null
+                              widget.category == null
                                   ? "Update Category"
                                   : "Add Category",
                               style: TextStyle(
                                 fontSize: 16,
-                                color: AppTheme.primaryColor ,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

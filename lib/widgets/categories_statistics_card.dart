@@ -4,10 +4,7 @@ import '../theme/theme.dart';
 class CategoriesStatisticsCard extends StatelessWidget {
   final List<dynamic> categoryData;
 
-   const CategoriesStatisticsCard({
-    super.key,
-    required this.categoryData,
-  });
+  const CategoriesStatisticsCard({super.key, required this.categoryData});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +47,7 @@ class CategoriesStatisticsCard extends StatelessWidget {
                   final percentage = totalQuizzes > 0
                       ? (category['count'] as int) / totalQuizzes * 100
                       : 0.0;
-                  
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: Row(
