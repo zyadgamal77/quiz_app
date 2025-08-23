@@ -83,79 +83,80 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
     }
   }
   Future<void> _SaveQuiz() async {
-    if (_formKey.currentState!.validate()) {
-      return;
-    }
-    
-    if (_questionFormItems.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please add at least one question')),
-      );
-      return;
-    }
-    
-    setState(() {
-      _isLoading = true;
-    });
-    
     try {
-      // Your save quiz logic here
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    } finally {
+      if (!_formKey.currentState!.validate()) {
+        return;
+      }
+      
+      if (_questionFormItems.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please add at least one question')),
+        );
+        return;
+      }
+      
       setState(() {
-        _isLoading = false;
+        _isLoading = true;
       });
-    }
-    if (_formKey.currentState!.validate()) {
-      return;
-    }
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      final questions = _questionFormItems.map((item)=>
-        Question (
-          text: item.questionController.text.trim(),
-          options: item.optionsControllers.map((e)=>
-            e.text.trim()).toList(),
-            correctOptionIndex: item.correctOptionIndex,
-        ),
-      ).toList();
-      await _firestore.collection('quizzes').doc().set(
-        Quiz(
-          id: _firestore.collection('quizzes').doc().id,
-          title: _titleController.text.trim(),
-          categoryId: _selectedCategoryId!,
-          timeLimit: int.parse(_timeLimitController.text),
-          questions: questions,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        ).toMap(),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Quiz added successfully',
-        style: TextStyle(color:
-        Colors.white,
-        ),
-        ),
-          backgroundColor: AppTheme.secondaryColor,
-        ),
-      );
-      Navigator.pop(context);
-          }catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add quiz',
-        style: TextStyle(color:
-        Colors.white,
-        ),
-        ),
-          backgroundColor: Colors.redAccent,
 
-        ),
-      );
+      // Validate all questions and options
+      for (var i = 0; i < _questionFormItems.length; i++) {
+        final item = _questionFormItems[i];
+        if (item.questionController.text.trim().isEmpty) {
+          throw 'Question ${i + 1} is empty';
+        }
+        
+        final options = item.optionsControllers.map((e) => e.text.trim()).toList();
+        if (options.any((option) => option.isEmpty)) {
+          throw 'All options for question ${i + 1} must be filled';
+        }
+        
+        if (options.toSet().length != options.length) {
+          throw 'Duplicate options found in question ${i + 1}';
+        }
+      }
+
+      final questions = _questionFormItems.map((item) => Question(
+        text: item.questionController.text.trim(),
+        options: item.optionsControllers.map((e) => e.text.trim()).toList(),
+        correctOptionIndex: item.correctOptionIndex,
+      )).toList();
+
+      final quizData = {
+        'title': _titleController.text.trim(),
+        'categoryId': _selectedCategoryId,
+        'timeLimit': int.tryParse(_timeLimitController.text) ?? 30, // Default to 30 seconds if parsing fails
+        'questions': questions.map((q) => q.toMap()).toList(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      debugPrint('Saving quiz data: $quizData');
+      
+      await _firestore.collection('quizzes').add(quizData);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Quiz added successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pop(context, true);
+      }
+    } catch (e, stackTrace) {
+      debugPrint('Error saving quiz: $e');
+      debugPrint('Stack trace: $stackTrace');
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}. Please check all fields and try again.'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
     }
     finally {
       setState(() {
