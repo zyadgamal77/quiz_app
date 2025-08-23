@@ -103,7 +103,8 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        centerTitle: true,
+        backgroundColor: AppTheme.primaryColor,
         title: _bulidTitle(),
         actions: [
           IconButton(
@@ -121,7 +122,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -190,10 +191,13 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                 }
                 final quizzes = snapshot.data!.docs
                     .map(
-                      (doc) => Quiz.fromMap(
-                        doc.id as Map<String, dynamic>,
-                        doc.data() as Map<String, dynamic>,
-                      ),
+                      (doc) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        return Quiz.fromMap(
+                          {'id': doc.id, ...data},
+                          data,
+                        );
+                      },
                     )
                     .where(
                       (quiz) =>
@@ -206,6 +210,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 20)),
                         Icon(
                           Icons.quiz_outlined,
                           color: AppTheme.secondaryColor,
@@ -269,13 +274,13 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                               children: [
                                 Icon(
                                   Icons.question_answer_outlined,
-                                  size: 16,
+                                  size: 20,
                                   color: AppTheme.textSecondaryColor,
                                 ),
                                 SizedBox(width: 4),
                                 Text("${quiz.questions.length} Questions"),
                                 SizedBox(width: 16),
-                                Icon(Icons.timer, size: 16),
+                                Icon(Icons.timer_outlined, size: 20),
                                 SizedBox(width: 4),
                                 Text("${quiz.timeLimit} Min"),
                               ],
@@ -303,7 +308,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                                   Icons.delete_outlined,
                                   color: Colors.redAccent,
                                 ),
-                                title: Text("Edit"),
+                                title: Text("delete"),
                               ),
                             ),
                           ],

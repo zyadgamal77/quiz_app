@@ -123,7 +123,8 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppTheme.backgroundColor,
+          centerTitle: true,
+          backgroundColor: AppTheme.primaryColor,
           title: Text(
             widget.category == null ? "Add Category" : "Edit Category",
             style: TextStyle(fontWeight: FontWeight.bold),

@@ -62,7 +62,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        centerTitle: true,
+        backgroundColor: AppTheme.primaryColor,
         title: Text(
           "Admin Dashboard",
           textAlign: TextAlign.center,
@@ -73,6 +74,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       body: _buildBody(),
     );
   }
+
   Widget _buildBody() {
     return FutureBuilder(
       future: _fetchStatistics(),
@@ -83,7 +85,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           );
         }
         if (snapshot.hasError) {
-          return  Center(child: Text('An error occurred'));
+          return Center(child: Text('An error occurred'));
         }
 
         final Map<String, dynamic> stats = snapshot.data!;
@@ -144,10 +146,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   formatDate: _formatDate,
                 ),
                 SizedBox(height: 24),
-                QuizActionCard(
-
-
-                ),
+                QuizActionCard(),
               ],
             ),
           ),

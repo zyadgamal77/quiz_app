@@ -19,7 +19,8 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        centerTitle: true,
+        backgroundColor: AppTheme.primaryColor,
         title: Text(
           "Manage Categories",
           style: TextStyle(
@@ -33,9 +34,8 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
             icon: Icon(Icons.add_circle_outline, color: AppTheme.primaryColor),
             onPressed: () {
               Navigator.push(
-                context, MaterialPageRoute(
-                builder:(context) => AddCategoriesScreens(),
-              ),
+                context,
+                MaterialPageRoute(builder: (context) => AddCategoriesScreens()),
               );
             },
           ),
@@ -82,9 +82,10 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
-                        context, MaterialPageRoute(
-                        builder:(context) => AddCategoriesScreens(),
-                      ),
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddCategoriesScreens(),
+                        ),
                       );
                     },
                     child: Text(
@@ -151,7 +152,8 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ManageQuizzesScreen(categoryId: category.id),
+                        builder: (context) =>
+                            ManageQuizzesScreen(categoryId: category.id),
                       ),
                     );
                   },
@@ -171,7 +173,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
   ) async {
     if (action == 'edit') {
       Navigator.push(
-        context, 
+        context,
         MaterialPageRoute(
           builder: (context) => AddCategoriesScreens(category: category),
         ),

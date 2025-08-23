@@ -7,23 +7,27 @@ import '../../theme/theme.dart';
 
 class EditQuizScreen extends StatefulWidget {
   final Quiz quiz;
+
   const EditQuizScreen({super.key, required this.quiz});
 
   @override
   State<EditQuizScreen> createState() => _EditQuizScreenState();
 }
+
 class QuestionFormItem {
   final TextEditingController questionController;
   final List<TextEditingController> optionsControllers;
   int correctOptionIndex;
+
   QuestionFormItem({
     required this.questionController,
     required this.optionsControllers,
     required this.correctOptionIndex,
   });
+
   void dispose() {
     questionController.dispose();
-    optionsControllers.forEach((element){
+    optionsControllers.forEach((element) {
       element.dispose();
     });
   }
@@ -31,17 +35,21 @@ class QuestionFormItem {
 
 class _EditQuizScreenState extends State<EditQuizScreen> {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _titleController ;
-  late TextEditingController _timeLimitController ;
+  late TextEditingController _titleController;
+
+  late TextEditingController _timeLimitController;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool _isLoading = false;
   late List<QuestionFormItem> _questionItems;
   String? _selectedCategoryId;
+
   @override
   void initState() {
     super.initState();
     _initData();
   }
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -54,43 +62,50 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
 
   void _initData() {
     _titleController = TextEditingController(text: widget.quiz.title);
-    _timeLimitController = TextEditingController(text: widget.quiz.timeLimit.toString());
+    _timeLimitController = TextEditingController(
+      text: widget.quiz.timeLimit.toString(),
+    );
     _selectedCategoryId = widget.quiz.categoryId;
     _questionItems = widget.quiz.questions.map((question) {
       return QuestionFormItem(
         questionController: TextEditingController(text: question.text),
-        optionsControllers: question.options.map((option) => 
-          TextEditingController(text: option)
-        ).toList(),
+        optionsControllers: question.options
+            .map((option) => TextEditingController(text: option))
+            .toList(),
         correctOptionIndex: question.correctOptionIndex,
       );
     }).toList();
   }
-void _addQuestion() {
-  setState(() {
-    _questionItems.add(
-      QuestionFormItem(
-        questionController: TextEditingController(),
-        optionsControllers: List.generate(4, (_) =>
-            TextEditingController(),),
-        correctOptionIndex: 0,
-      ),
-    );
-  });
-}
-void _removeQuestion(int index) {
-  if (_questionItems.length > 1) { // Don't remove the last question
+
+  void _addQuestion() {
     setState(() {
-      // Dispose the controllers before removing
-      _questionItems[index].dispose();
-      _questionItems.removeAt(index);
+      _questionItems.add(
+        QuestionFormItem(
+          questionController: TextEditingController(),
+          optionsControllers: List.generate(4, (_) => TextEditingController()),
+          correctOptionIndex: 0,
+        ),
+      );
     });
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('The quiz must contain at least one question')),
-    );
   }
-}
+
+  void _removeQuestion(int index) {
+    if (_questionItems.length > 1) {
+      // Don't remove the last question
+      setState(() {
+        // Dispose the controllers before removing
+        _questionItems[index].dispose();
+        _questionItems.removeAt(index);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('The quiz must contain at least one question'),
+        ),
+      );
+    }
+  }
+
   Future<void> _updateQuiz() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -101,11 +116,17 @@ void _removeQuestion(int index) {
     });
 
     try {
-      final questions = _questionItems.map((item) => Question(
-        text: item.questionController.text.trim(),
-        options: item.optionsControllers.map((e) => e.text.trim()).toList(),
-        correctOptionIndex: item.correctOptionIndex,
-      )).toList();
+      final questions = _questionItems
+          .map(
+            (item) => Question(
+              text: item.questionController.text.trim(),
+              options: item.optionsControllers
+                  .map((e) => e.text.trim())
+                  .toList(),
+              correctOptionIndex: item.correctOptionIndex,
+            ),
+          )
+          .toList();
 
       final updatedQuiz = widget.quiz.copyWith(
         title: _titleController.text.trim(),
@@ -119,18 +140,18 @@ void _removeQuestion(int index) {
           .update(updatedQuiz.toMap());
 
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Quiz updated successfully'),
           backgroundColor: AppTheme.secondaryColor,
         ),
       );
-      
+
       Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to update quiz: $e'),
@@ -145,12 +166,14 @@ void _removeQuestion(int index) {
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
-        title: const Text(
+        centerTitle: true,
+        backgroundColor: AppTheme.primaryColor,
+        title:  Text(
           "Edit Quiz",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -175,7 +198,7 @@ void _removeQuestion(int index) {
               },
             ),
             const SizedBox(height: 16),
-            
+
             // Time Limit Field
             TextFormField(
               controller: _timeLimitController,
@@ -195,7 +218,7 @@ void _removeQuestion(int index) {
               },
             ),
             const SizedBox(height: 24),
-            
+
             // Questions Section
             ..._questionItems.asMap().entries.map((entry) {
               final index = entry.key;
@@ -211,76 +234,141 @@ void _removeQuestion(int index) {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Question ${index + 1}',
-                            style: const TextStyle(
-                              fontSize: 16,
+                            'Questions',
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: AppTheme.textPrimaryColor,
                             ),
                           ),
-                          if (_questionItems.length > 1)
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () => _removeQuestion(index),
+                          ElevatedButton.icon(
+                            onPressed: _addQuestion,
+                            label: Text('Add Question'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.primaryColor,
+                              foregroundColor: Colors.white,
                             ),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: question.questionController,
-                        decoration: const InputDecoration(
-                          labelText: 'Question',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a question';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      ...question.optionsControllers.asMap().entries.map((entry) {
-                        final optionIndex = entry.key;
-                        final controller = entry.value;
-                        return ListTile(
-                          leading: Radio<int>(
-                            value: optionIndex,
-                            groupValue: question.correctOptionIndex,
-                            onChanged: (value) {
-                              setState(() {
-                                question.correctOptionIndex = value!;
-                              });
-                            },
-                          ),
-                          title: TextFormField(
-                            controller: controller,
-                            decoration: InputDecoration(
-                              labelText: 'Option ${optionIndex + 1}',
-                              border: const OutlineInputBorder(),
+                      SizedBox(height: 16),
+                      ..._questionItems.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final question = entry.value;
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Question ${index + 1}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: AppTheme.primaryColor,
+                                      ),
+                                    ),
+                                    if (_questionItems.length > 1)
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.redAccent,
+                                        ),
+                                        onPressed: () => _removeQuestion(index),
+                                      ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                  controller: question.questionController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Question title',
+                                    hintText: 'Enter question title',
+                                    prefixIcon: Icon(
+                                      Icons.question_answer,
+                                      color: AppTheme.primaryColor,
+                                    ),
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter the question';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 10),
+                                ...question.optionsControllers.asMap().entries.map((
+                                  optionEntry,
+                                ) {
+                                  final optionIndex = optionEntry.key;
+                                  final controller = optionEntry.value;
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Radio<int>(
+                                          activeColor: AppTheme.primaryColor,
+                                          value: optionIndex,
+                                          groupValue:
+                                              question.correctOptionIndex,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              question.correctOptionIndex =
+                                                  value!;
+                                            });
+                                          },
+                                        ),
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller: controller,
+                                            decoration: InputDecoration(
+                                              labelText:
+                                                  'Option ${optionIndex + 1}',
+                                              hintText: 'Enter option text',
+                                              border:
+                                                  const OutlineInputBorder(),
+                                            ),
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Please enter option text';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ],
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter option text';
-                              }
-                              return null;
-                            },
                           ),
                         );
                       }).toList(),
+                      const SizedBox(height: 32),
+
                     ],
                   ),
                 ),
               );
             }).toList(),
-            
+
             // Add Question Button
             ElevatedButton(
               onPressed: _addQuestion,
               child: const Text('Add Question'),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Save Button
             ElevatedButton(
               onPressed: _isLoading ? null : _updateQuiz,
