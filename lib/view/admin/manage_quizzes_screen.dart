@@ -190,15 +190,22 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                   );
                 }
                 final quizzes = snapshot.data!.docs
-                    .map(
+                    .map<Quiz?>(
                       (doc) {
-                        final data = doc.data() as Map<String, dynamic>;
-                        return Quiz.fromMap(
-                          {'id': doc.id, ...data},
-                          data,
-                        );
+                        try {
+                          final data = doc.data() as Map<String, dynamic>;
+                          return Quiz.fromMap(
+                            {'id': doc.id, ...data},
+                            data,
+                          );
+                        } catch (e) {
+                          print('Error parsing quiz ${doc.id}: $e');
+                          return null;
+                        }
                       },
                     )
+                    .where((quiz) => quiz != null)
+                    .cast<Quiz>()
                     .where(
                       (quiz) =>
                           _searchController.text.isEmpty ||
