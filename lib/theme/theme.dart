@@ -12,14 +12,18 @@ class AppTheme {
   static ThemeData get theme {
     return ThemeData(
       primaryColor: primaryColor,
-      scaffoldBackgroundColor: backgroundColor,
+      scaffoldBackgroundColor: Colors.white,
       textTheme: GoogleFonts.poppinsTextTheme(),
-      appBarTheme: AppBarTheme(
-        backgroundColor: cardColor,
-        foregroundColor: textPrimaryColor,
-        elevation: 0,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
         centerTitle: true,
+        elevation: 0,
         iconTheme: IconThemeData(color: textPrimaryColor),
+        titleTextStyle: TextStyle(
+          color: textPrimaryColor,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       cardTheme: CardThemeData(
         color: cardColor,
@@ -38,7 +42,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: backgroundColor,
+        fillColor: Colors.grey.shade200,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

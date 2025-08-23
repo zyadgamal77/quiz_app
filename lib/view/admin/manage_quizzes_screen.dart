@@ -102,14 +102,11 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.white,
         title: _bulidTitle(),
         actions: [
           IconButton(
-            icon: Icon(Icons.add_circle_outline, color: AppTheme.primaryColor),
+            icon: Icon(Icons.add_circle_outline),
             onPressed: () {
               Navigator.push(
                 context,

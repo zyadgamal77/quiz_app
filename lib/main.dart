@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Smart Quiz",
-      theme: ThemeData.light(),
-      home: const AdminHomeScreen(),
+      theme: AppTheme.theme,
+      home: AdminHomeScreen(),
     );
   }
 }
