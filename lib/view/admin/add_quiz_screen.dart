@@ -234,9 +234,11 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: AppTheme.primaryColor,
+        backgroundColor: Colors.white,
         title: Text(
           widget.categoryName != null
               ? "Add ${widget.categoryName} quiz"

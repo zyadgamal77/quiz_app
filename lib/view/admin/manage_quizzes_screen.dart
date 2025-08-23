@@ -102,9 +102,10 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: AppTheme.primaryColor,
+        backgroundColor: Colors.white,
         title: _bulidTitle(),
         actions: [
           IconButton(
@@ -176,7 +177,9 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
             ),
           ),
           Expanded(
+
             child: StreamBuilder<QuerySnapshot>(
+
               stream: _getQuizStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {

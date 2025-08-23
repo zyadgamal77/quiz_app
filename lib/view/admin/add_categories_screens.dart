@@ -124,7 +124,7 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: AppTheme.primaryColor,
+          backgroundColor: Colors.white,
           title: Text(
             widget.category == null ? "Add Category" : "Edit Category",
             style: TextStyle(fontWeight: FontWeight.bold),

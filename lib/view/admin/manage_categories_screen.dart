@@ -18,9 +18,10 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: AppTheme.primaryColor,
+        backgroundColor: Colors.white,
         title: Text(
           "Manage Categories",
           style: TextStyle(
