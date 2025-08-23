@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/model/quiz.dart';
+import 'package:quiz_app/view/admin/edit_quiz_screen.dart';
 import '../../model/category.dart';
 import '../../theme/theme.dart';
 import 'add_categories_screens.dart';
@@ -327,7 +328,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
     Quiz quiz,
   ) async {
     if (value == 'edit') {
-      //  Navigator.push(context, MaterialPageRoute(builder: (context) => AddQuizScreen(quiz: quiz,),),);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => EditQuizScreen(quiz: quiz,),),);
     } else if (value == 'delete') {
       final confirm = await showDialog<bool>(
         context: context,
