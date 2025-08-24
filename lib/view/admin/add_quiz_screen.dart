@@ -1,10 +1,8 @@
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/model/category.dart';
 import 'package:quiz_app/model/question.dart';
-import 'package:quiz_app/model/quiz.dart';
 import 'package:quiz_app/theme/theme.dart';
 
 class AddQuizScreen extends StatefulWidget {
@@ -70,7 +68,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
         _categories = snapshot.docs
             .map(
               (doc) =>
-                  Category.fromMap(doc.id, doc.data() as Map<String, dynamic>),
+                  Category.fromMap(doc.id, doc.data()),
             )
             .toList();
       });
