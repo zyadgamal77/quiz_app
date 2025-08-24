@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:quiz_app/model/quiz.dart';
 import 'package:quiz_app/theme/theme.dart';
+import 'package:quiz_app/view/user/quiz_play_screen.dart';
 
 import '../../model/category.dart';
 import '../../model/question.dart';
-import '../../model/quiz.dart';
 
 class CategoryScreen extends StatefulWidget {
   final Category category;
@@ -175,7 +176,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
             onTap: () {
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(quiz: quiz),),);
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context)
+              => QuizPlayScreen(quiz: quiz),),);
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),

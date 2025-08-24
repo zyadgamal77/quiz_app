@@ -1,17 +1,212 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:quiz_app/model/quiz.dart';
+import 'package:quiz_app/theme/theme.dart';
 
 class QuizPlayScreen extends StatefulWidget {
-  const QuizPlayScreen({super.key});
+  final Quiz quiz;
+
+  const QuizPlayScreen({super.key, required this.quiz});
 
   @override
   State<QuizPlayScreen> createState() => _QuizPlayScreenState();
 }
 
-class _QuizPlayScreenState extends State<QuizPlayScreen> {
+class _QuizPlayScreenState extends State<QuizPlayScreen>
+    with SingleTickerProviderStateMixin {
+  late PageController _pageController;
+  int _currentQuestionIndex = 0;
+  Map<int, int?> _selectedAnswers = {};
+  int _totalMinutes = 0;
+  int _remainingSeconds = 0;
+  int _remainingMinutes = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    _totalMinutes = widget.quiz.timeLimit;
+    _remainingSeconds = 0;
+    _remainingMinutes = _totalMinutes;
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_remainingSeconds > 0) {
+          _remainingSeconds--;
+        } else {
+          if (_remainingMinutes > 0) {
+            _remainingSeconds = 59;
+            _remainingMinutes--;
+          } else {
+            _timer?.cancel();
+            _completeQuiz();
+          }
+        }
+      });
+    });
+  }
+
+  void _selectAnswer(int questionIndex, int optionIndex) {
+    if (_selectedAnswers[questionIndex] == null) {
+      setState(() {
+        _selectedAnswers[questionIndex] = optionIndex;
+      });
+    }
+  }
+
+  void _nextQuestion() {
+    if (_currentQuestionIndex < widget.quiz.questions.length - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      _completeQuiz();
+    }
+  }
+
+  void _completeQuiz() {
+    _timer?.cancel();
+    int correctAnswers = _calculateScore();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Quiz Completed')),
+      // Navigator.pushReplacement(context,
+      // MaterialPageRoute(builder: QuizResultScreen(
+      //   quiz: widget.quiz,
+      //   totalQuestions: widget.quiz.questions.length,
+      //   correctAnswers: correctAnswers,
+      //   selectedAnswers: _selectedAnswers,
+      // )));
+    );
+  }
+
+  int _calculateScore() {
+    int correctAnswers = 0;
+    for (int i = 0; i < widget.quiz.questions.length; i++) {
+      final selectedAnswer = _selectedAnswers[i];
+      if (selectedAnswer != null &&
+          selectedAnswer == widget.quiz.questions[i].correctOptionIndex) {
+        correctAnswers++;
+      }
+    }
+    return correctAnswers;
+  }
+
+  Color _getAnswerColor() {
+    double timeProgress =
+        1 -
+            ((_remainingMinutes * 60 + _remainingSeconds) /
+                (_totalMinutes * 60));
+    if (timeProgress < 0.4) return Colors.green;
+    if (timeProgress < 0.6) return Colors.orange;
+    if (timeProgress < 0.8) return Colors.deepOrangeAccent;
+    return Colors.redAccent;
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.primaryColor,
+      body: SafeArea(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+        Container(
+        margin: EdgeInsets.all(12),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              offset: const Offset(0, 4),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Column(
+            children: [
+            Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+            IconButton(
+            onPressed: ()
+        {
+        Navigator.pop(context);
+        },
+        icon:Icon(Icons.close),
+        color: AppTheme.primaryColor,
+      ),
+      Stack(
+        alignment: Alignment.center,
+        children: [
+        SizedBox(
+        width: 55,
+        height: 55,
+        child: CircularProgressIndicator(
+          value:
+          (_remainingMinutes * 60 + _remainingSeconds) /
+              (_totalMinutes * 60),
+          strokeWidth: 5,
+          backgroundColor: Colors.grey[300],
+          valueColor: AlwaysStoppedAnimation<Color>(
+            _getAnswerColor(),
+          ),
+        ),
+      ),
+      Text(
+        "$_remainingMinutes:${_remainingSeconds.toString().padLeft(2, '0')}",
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: _getAnswerColor(),
+      ),
+    ),
+    ],
+    ),
+    ],
+    ),
+    SizedBox(height: 20),
+    TweenAnimationBuilder<double>(
+    tween: Tween(begin: 0, end: (_currentQuestionIndex+1)/widget.quiz.questions.length
+    ),
+    duration: Duration(milliseconds : 300),
+    builder: (context, progress, child){
+    return LinearProgressIndicator(
+    borderRadius: BorderRadius.horizontal(
+    left: Radius.circular(10),
+    right: Radius.circular(10),
+    ),
+    value: progress,
+    backgroundColor: Colors.grey[300],
+    valueColor: AlwaysStoppedAnimation<Color>(
+    AppTheme.primaryColor,
+    ),
+    minHeight: 6,);
+    },
+    ),
+    ],
+    ),
+    ),
 
+
+    ],
+    )
+    ,
+    )
+    ,
     );
   }
 }
