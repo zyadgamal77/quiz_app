@@ -79,7 +79,7 @@ class RecentActivityCard extends StatelessWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Created on ${formatDate(quiz['createdAt'].toDate())}',
+                                'Created on ${quiz['createdAt'] != null ? formatDate(quiz['createdAt'] is Timestamp ? quiz['createdAt'].toDate() : DateTime.now()) : 'Unknown date'}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: AppTheme.textSecondaryColor,
