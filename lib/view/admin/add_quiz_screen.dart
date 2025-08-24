@@ -209,7 +209,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
               'Error: ${e.toString()}. Please check all fields and try again.',
             ),
             backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
+            duration: const Duration(seconds: 6),
           ),
         );
       }
