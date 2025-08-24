@@ -46,15 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _filteredCategories = _allCategories.where((category) {
         final matchesSearch = category.name.toLowerCase().contains(
-              query.toLowerCase(),
-            ) ||
-            category.description.toLowerCase().contains(query.toLowerCase());
-            
-        final matchesCategory = categoryFilter == null ||
+          query.toLowerCase(),
+        );
+        category.description.toLowerCase().contains(query.toLowerCase());
+        final matchesCategory =
+            categoryFilter == null ||
             categoryFilter == "All" ||
-            category.name == categoryFilter;
-            
-        return matchesSearch && matchesCategory;
+            category.name.toLowerCase() == categoryFilter.toLowerCase();
+        return matchesCategory || matchesSearch;
       }).toList();
     });
   }

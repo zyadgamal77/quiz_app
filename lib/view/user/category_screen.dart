@@ -236,8 +236,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
           ),
         )
-        .animate(delay: Duration(milliseconds: index * 100))
-        .slideX(begin: 0.5, end: 0, duration: Duration(milliseconds: 300))
+        .animate(delay: Duration(milliseconds: index * 50))
+        .slideX(begin: 0.5, end: 0, duration: Duration(milliseconds: 200))
         .fadeIn();
   }
 }

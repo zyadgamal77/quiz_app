@@ -132,18 +132,17 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
         title: _titleController.text.trim(),
         timeLimit: int.tryParse(_timeLimitController.text) ?? 1,
         questions: questions,
-        createdAt: widget.quiz.createdAt,
       );
 
       await _firestore
           .collection('quizzes')
           .doc(widget.quiz.id)
-          .update(updatedQuiz.toMap(isUpdate: true));
+          .update(updatedQuiz.toMap());
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        const SnackBar(
           content: Text('Quiz updated successfully'),
           backgroundColor: AppTheme.secondaryColor,
         ),
@@ -182,12 +181,12 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding:  EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           children: [
             // Title Field
             TextFormField(
               controller: _titleController,
-              decoration:  InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Quiz Title',
                 border: OutlineInputBorder(),
               ),
@@ -198,12 +197,12 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
                 return null;
               },
             ),
-             SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // Time Limit Field
             TextFormField(
               controller: _timeLimitController,
-              decoration:  InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Time Limit (minutes)',
                 border: OutlineInputBorder(),
               ),
@@ -218,16 +217,16 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
                 return null;
               },
             ),
-             SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             // Questions Section
             ..._questionItems.asMap().entries.map((entry) {
               final index = entry.key;
               final question = entry.value;
               return Card(
-                margin:  EdgeInsets.only(bottom: 16),
+                margin: const EdgeInsets.only(bottom: 16),
                 child: Padding(
-                  padding:  EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -257,9 +256,9 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
                         final index = entry.key;
                         final question = entry.value;
                         return Card(
-                          margin: EdgeInsets.only(bottom: 16),
+                          margin: const EdgeInsets.only(bottom: 16),
                           child: Padding(
-                            padding: EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -277,7 +276,7 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
                                     ),
                                     if (_questionItems.length > 1)
                                       IconButton(
-                                        icon:  Icon(
+                                        icon: const Icon(
                                           Icons.delete,
                                           color: Colors.redAccent,
                                         ),
@@ -285,10 +284,10 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
                                       ),
                                   ],
                                 ),
-                                 SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 TextFormField(
                                   controller: question.questionController,
-                                  decoration:  InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Question title',
                                     hintText: 'Enter question title',
                                     prefixIcon: Icon(
@@ -304,14 +303,14 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
                                     return null;
                                   },
                                 ),
-                                 SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 ...question.optionsControllers.asMap().entries.map((
                                   optionEntry,
                                 ) {
                                   final optionIndex = optionEntry.key;
                                   final controller = optionEntry.value;
                                   return Padding(
-                                    padding:  EdgeInsets.only(top: 8.0),
+                                    padding: const EdgeInsets.only(top: 8.0),
                                     child: Row(
                                       children: [
                                         Radio<int>(
@@ -354,7 +353,7 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
                           ),
                         );
                       }).toList(),
-                       SizedBox(height: 32),
+                      const SizedBox(height: 32),
 
                     ],
                   ),
@@ -365,10 +364,10 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
             // Add Question Button
             ElevatedButton(
               onPressed: _addQuestion,
-              child:  Text('Add Question'),
+              child: const Text('Add Question'),
             ),
 
-             SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             // Save Button
             ElevatedButton(
