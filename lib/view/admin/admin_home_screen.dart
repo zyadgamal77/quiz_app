@@ -17,41 +17,67 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<Map<String, dynamic>> _fetchStatistics() async {
-    final categoriesCount = await _firestore
-        .collection('categories')
-        .count()
-        .get();
+    try {
+      // Get categories count
+      final categoriesCount = await _firestore
+          .collection('categories')
+          .count()
+          .get()
+          .catchError((error) => throw Exception('Failed to load categories count'));
 
-    final quizzesCount = await _firestore.collection('quizzes').count().get();
-    final latestQuizzes = await _firestore
-        .collection('quizzes')
-        .orderBy('createdAt', descending: true)
-        .limit(5)
-        .get();
+      // Get quizzes count
+      final quizzesCount = await _firestore
+          .collection('quizzes')
+          .count()
+          .get()
+          .catchError((error) => throw Exception('Failed to load quizzes count'));
 
-    final categories = await _firestore.collection('categories').get();
+      // Get latest quizzes
+      final latestQuizzes = await _firestore
+          .collection('quizzes')
+          .orderBy('createdAt', descending: true)
+          .limit(5)
+          .get()
+          .catchError((error) => throw Exception('Failed to load latest quizzes'));
 
-    final categoryData = await Future.wait(
-      categories.docs.map((category) async {
-        final quiz = await _firestore
-            .collection('quizzes')
-            .where('categoryId', isEqualTo: category.id)
-            .count()
-            .get();
+      // Get categories
+      final categories = await _firestore
+          .collection('categories')
+          .get()
+          .catchError((error) => throw Exception('Failed to load categories'));
 
-        return {
-          'name': category.data()['name'] as String,
-          'count': quizzesCount.count,
-        };
-      }),
-    );
+      final categoryData = await Future.wait(
+        categories.docs.map((category) async {
+          try {
+            final quizCount = await _firestore
+                .collection('quizzes')
+                .where('categoryId', isEqualTo: category.id)
+                .count()
+                .get();
 
-    return {
-      'totalCategories': categoriesCount.count,
-      'totalQuizzes': quizzesCount.count,
-      'latestQuizzes': latestQuizzes.docs,
-      'categoryData': categoryData,
-    };
+            return {
+              'name': category.data()?['name'] ?? 'Unnamed Category',
+              'count': quizCount.count,
+            };
+          } catch (e) {
+            return {
+              'name': category.data()?['name'] ?? 'Unnamed Category',
+              'count': 0,
+            };
+          }
+        }),
+      );
+
+      return {
+        'totalCategories': categoriesCount.count,
+        'totalQuizzes': quizzesCount.count,
+        'latestQuizzes': latestQuizzes.docs,
+        'categoryData': categoryData,
+      };
+    } catch (e) {
+      debugPrint('Error in _fetchStatistics: $e');
+      rethrow; // This will be caught by the FutureBuilder
+    }
   }
 
   String _formatDate(DateTime date) {

@@ -45,15 +45,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void _filterCategories(String query, {String? categoryFilter}) {
     setState(() {
       _filteredCategories = _allCategories.where((category) {
-        final matchesSearch = category.name.toLowerCase().contains(
-          query.toLowerCase(),
-        );
-        category.description.toLowerCase().contains(query.toLowerCase());
-        final matchesCategory =
-            categoryFilter == null ||
+        final searchQuery = query.toLowerCase();
+        final matchesSearch = category.name.toLowerCase().contains(searchQuery) ||
+            category.description.toLowerCase().contains(searchQuery);
+            
+        final matchesCategory = categoryFilter == null ||
             categoryFilter == "All" ||
-            category.name.toLowerCase() == categoryFilter.toLowerCase();
-        return matchesCategory || matchesSearch;
+            category.name == categoryFilter;
+            
+        return matchesSearch && matchesCategory;
       }).toList();
     });
   }

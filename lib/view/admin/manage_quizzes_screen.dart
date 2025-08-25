@@ -11,7 +11,7 @@ class ManageQuizzesScreen extends StatefulWidget {
   final String? categoryId;
   final String? categoryName;
 
-  const ManageQuizzesScreen({super.key, this.categoryId,this.categoryName});
+  const ManageQuizzesScreen({super.key, this.categoryId, this.categoryName});
 
   @override
   State<ManageQuizzesScreen> createState() => _ManageQuizzesScreenState();
@@ -74,7 +74,15 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
   Widget _bulidTitle() {
     String? categoryId = _selectedCategoryId ?? widget.categoryId;
     if (categoryId == null) {
-      return Center(child: Text("All Quizzes", style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.textPrimaryColor)));
+      return Center(
+        child: Text(
+          "All Quizzes",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
+          ),
+        ),
+      );
     }
     return StreamBuilder<DocumentSnapshot>(
       stream: _firestore.collection("categories").doc(categoryId).snapshots(),
@@ -110,8 +118,12 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>
-                    AddQuizScreen(categoryId: widget.categoryId,categoryName:widget.categoryName,)),
+                MaterialPageRoute(
+                  builder: (context) => AddQuizScreen(
+                    categoryId: widget.categoryId,
+                    categoryName: widget.categoryName,
+                  ),
+                ),
               );
             },
           ),
@@ -174,13 +186,13 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
             ),
           ),
           Expanded(
-
             child: StreamBuilder<QuerySnapshot>(
-
               stream: _getQuizStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Center(child: Text("An Error Occurred: ${snapshot.error}"));
+                  return Center(
+                    child: Text("An Error Occurred: ${snapshot.error}"),
+                  );
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -190,20 +202,15 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                   );
                 }
                 final quizzes = snapshot.data!.docs
-                    .map<Quiz?>(
-                      (doc) {
-                        try {
-                          final data = doc.data() as Map<String, dynamic>;
-                          return Quiz.fromMap(
-                            {'id': doc.id, ...data},
-                            data,
-                          );
-                        } catch (e) {
-                          print('Error parsing quiz ${doc.id}: $e');
-                          return null;
-                        }
-                      },
-                    )
+                    .map<Quiz?>((doc) {
+                      try {
+                        final data = doc.data() as Map<String, dynamic>;
+                        return Quiz.fromMap({'id': doc.id, ...data}, data);
+                      } catch (e) {
+                        print('Error parsing quiz ${doc.id}: $e');
+                        return null;
+                      }
+                    })
                     .where((quiz) => quiz != null)
                     .cast<Quiz>()
                     .where(
@@ -237,8 +244,12 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) =>
-                                  AddQuizScreen(categoryId: widget.categoryId,categoryName: widget.categoryName,)),
+                              MaterialPageRoute(
+                                builder: (context) => AddQuizScreen(
+                                  categoryId: widget.categoryId,
+                                  categoryName: widget.categoryName,
+                                ),
+                              ),
                             );
                           },
                           child: Text("Add Quiz"),
@@ -340,7 +351,10 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
     Quiz quiz,
   ) async {
     if (value == 'edit') {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => EditQuizScreen(quiz: quiz,),),);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => EditQuizScreen(quiz: quiz)),
+      );
     } else if (value == 'delete') {
       final confirm = await showDialog<bool>(
         context: context,
@@ -355,8 +369,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
               },
             ),
             TextButton(
-              child: Text("Delete",
-                  style: TextStyle(color: Colors.redAccent)),
+              child: Text("Delete", style: TextStyle(color: Colors.redAccent)),
               onPressed: () {
                 Navigator.pop(context, true);
               },
