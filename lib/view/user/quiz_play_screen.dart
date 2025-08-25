@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quiz_app/model/quiz.dart';
 import 'package:quiz_app/theme/theme.dart';
+
+import '../../model/question.dart';
 
 class QuizPlayScreen extends StatefulWidget {
   final Quiz quiz;
@@ -99,8 +102,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
   Color _getAnswerColor() {
     double timeProgress =
         1 -
-            ((_remainingMinutes * 60 + _remainingSeconds) /
-                (_totalMinutes * 60));
+        ((_remainingMinutes * 60 + _remainingSeconds) / (_totalMinutes * 60));
     if (timeProgress < 0.4) return Colors.green;
     if (timeProgress < 0.6) return Colors.orange;
     if (timeProgress < 0.8) return Colors.deepOrangeAccent;
@@ -120,93 +122,234 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
       backgroundColor: AppTheme.primaryColor,
       body: SafeArea(
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-        Container(
-        margin: EdgeInsets.all(12),
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              offset: const Offset(0, 4),
-              blurRadius: 10,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.all(12),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    offset: const Offset(0, 4),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(Icons.close),
+                        color: AppTheme.primaryColor,
+                      ),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            width: 55,
+                            height: 55,
+                            child: CircularProgressIndicator(
+                              value:
+                                  (_remainingMinutes * 60 + _remainingSeconds) /
+                                  (_totalMinutes * 60),
+                              strokeWidth: 5,
+                              backgroundColor: Colors.grey[300],
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                _getAnswerColor(),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            "$_remainingMinutes:${_remainingSeconds.toString().padLeft(2, '0')}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: _getAnswerColor(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  TweenAnimationBuilder<double>(
+                    tween: Tween(
+                      begin: 0,
+                      end:
+                          (_currentQuestionIndex + 1) /
+                          widget.quiz.questions.length,
+                    ),
+                    duration: Duration(milliseconds: 300),
+                    builder: (context, progress, child) {
+                      return LinearProgressIndicator(
+                        borderRadius: BorderRadius.horizontal(
+                          left: Radius.circular(10),
+                          right: Radius.circular(10),
+                        ),
+                        value: progress,
+                        backgroundColor: Colors.grey[300],
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppTheme.primaryColor,
+                        ),
+                        minHeight: 6,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: widget.quiz.questions.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentQuestionIndex = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  final question = widget.quiz.questions[index];
+                  return _buildQuestionCard(question, index);
+                },
+              ),
             ),
           ],
         ),
-        child: Column(
-            children: [
-            Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-            IconButton(
-            onPressed: ()
-        {
-        Navigator.pop(context);
-        },
-        icon:Icon(Icons.close),
-        color: AppTheme.primaryColor,
       ),
-      Stack(
-        alignment: Alignment.center,
-        children: [
-        SizedBox(
-        width: 55,
-        height: 55,
-        child: CircularProgressIndicator(
-          value:
-          (_remainingMinutes * 60 + _remainingSeconds) /
-              (_totalMinutes * 60),
-          strokeWidth: 5,
-          backgroundColor: Colors.grey[300],
-          valueColor: AlwaysStoppedAnimation<Color>(
-            _getAnswerColor(),
-          ),
-        ),
-      ),
-      Text(
-        "$_remainingMinutes:${_remainingSeconds.toString().padLeft(2, '0')}",
-        style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: _getAnswerColor(),
-      ),
-    ),
-    ],
-    ),
-    ],
-    ),
-    SizedBox(height: 20),
-    TweenAnimationBuilder<double>(
-    tween: Tween(begin: 0, end: (_currentQuestionIndex+1)/widget.quiz.questions.length
-    ),
-    duration: Duration(milliseconds : 300),
-    builder: (context, progress, child){
-    return LinearProgressIndicator(
-    borderRadius: BorderRadius.horizontal(
-    left: Radius.circular(10),
-    right: Radius.circular(10),
-    ),
-    value: progress,
-    backgroundColor: Colors.grey[300],
-    valueColor: AlwaysStoppedAnimation<Color>(
-    AppTheme.primaryColor,
-    ),
-    minHeight: 6,);
-    },
-    ),
-    ],
-    ),
-    ),
-
-
-    ],
-    )
-    ,
-    )
-    ,
     );
+  }
+
+  Widget _buildQuestionCard(Question question, int index) {
+    return Container(
+      margin: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            offset: const Offset(0, 4),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Question ${index + 1}",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.textPrimaryColor,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            question.text,  // This shows the actual question
+            style: TextStyle(
+              fontSize: 18,
+              color: AppTheme.textPrimaryColor,
+            ),
+          ),
+          SizedBox(height: 24),
+          SizedBox(height: 24),
+          ...question.options.asMap().entries.map((entry) {
+            final optionIndex = entry.key;
+            final option = entry.value;
+            final isSelected = _selectedAnswers[index] == optionIndex;
+            final isCorrect =
+                _selectedAnswers[index] == question.correctOptionIndex;
+            return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    decoration: BoxDecoration(
+                      color: isCorrect
+                          ? isSelected
+                                ? AppTheme.secondaryColor.withOpacity(0.1)
+                                : Colors.redAccent.withOpacity(0.1)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isSelected
+                            ? isCorrect
+                                  ? AppTheme.secondaryColor
+                                  : Colors.redAccent
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                    child: ListTile(
+                      onTap: _selectedAnswers[index] == null
+                          ? () => _selectAnswer(optionIndex,index)
+                          : null,
+                      title: Text(
+                        option,
+                        style: TextStyle(
+                          color: isSelected
+                              ? isCorrect
+                                    ? AppTheme.secondaryColor
+                                    : Colors.redAccent
+                              : _selectedAnswers[index] != null
+                              ? Colors.grey.shade500
+                              : AppTheme.textPrimaryColor,
+                        ),
+                      ),
+                      trailing: isSelected
+                          ? isCorrect
+                                ? Icon(
+                                    Icons.check_circle_rounded,
+                                    color: AppTheme.secondaryColor,
+                                  )
+                                : Icon(Icons.close, color: Colors.redAccent)
+                          : null,
+                    ),
+                  ),
+                )
+                .animate(delay: Duration(milliseconds: 200))
+                .slideX(
+                  begin: 0.5,
+                  end: 0,
+                  duration: Duration(milliseconds: 200),
+                );
+          }),
+          Spacer(),
+          SizedBox(
+            width: double.infinity,
+            height: 55,
+            child: ElevatedButton(
+              onPressed: () {
+                _selectedAnswers[index] != null ? _nextQuestion() : null;
+              },
+              child: Text(
+                index == widget.quiz.questions.length - 1
+                    ? "Finish Quiz"
+                    : "Next Question",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ); //.animate()
+    // .fadeIn(duration:Duration(milliseconds: 200))
+    //.slideY(
+    //begin: 0.1,
+    // end: 0,
+    // duration: Duration(milliseconds: 300)
+    //);
   }
 }
