@@ -20,16 +20,16 @@ class RecentActivityCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.history_rounded,
                   color: AppTheme.primaryColor,
                   size: 24,
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Text(
-                  "Recent Activity",
+                  'Recent Activity',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -61,7 +61,7 @@ class RecentActivityCard extends StatelessWidget {
                           ),
                           child: const Icon(
                             Icons.quiz_rounded,
-                            color: AppTheme.primaryColor,
+                            color: Colors.white,
                             size: 20,
                           ),
                         ),

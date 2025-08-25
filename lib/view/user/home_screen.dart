@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             category.description.toLowerCase().contains(searchQuery);
             
         final matchesCategory = categoryFilter == null ||
-            categoryFilter == "All" ||
+            categoryFilter == 'All' ||
             category.name == categoryFilter;
             
         return matchesSearch && matchesCategory;
@@ -71,14 +71,14 @@ class _HomeScreenState extends State<HomeScreen> {
             centerTitle: false,
             backgroundColor: AppTheme.primaryColor,
             elevation: 0,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
             ),
-            title: Text(
-              "Smart Quiz",
+            title: const Text(
+              'Smart Quiz',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -89,30 +89,30 @@ class _HomeScreenState extends State<HomeScreen> {
               background: SafeArea(
                 child: Column(
                   children: [
-                    SizedBox(height: kToolbarHeight + 24),
+                    const SizedBox(height: kToolbarHeight + 24),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Welcome, Learner!",
+                          const Text(
+                            'Welcome, Learner!',
                             style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
-                            "let\'s test your knowledge today!",
+                            "let's test your knowledge today!",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white.withOpacity(0.8),
                             ),
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.1),
                                   blurRadius: 4,
-                                  offset: Offset(0, 4),
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
@@ -129,8 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               controller: _searchController,
                               onChanged: (value) => _filterCategories(value),
                               decoration: InputDecoration(
-                                hintText: "Search categories...",
-                                prefixIcon: Icon(
+                                hintText: 'Search categories...',
+                                prefixIcon: const Icon(
                                   Icons.search,
                                   color: AppTheme.primaryColor,
                                 ),
@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           _searchController.clear();
                                           _filterCategories('');
                                         },
-                                        icon: Icon(Icons.clear),
+                                        icon: const Icon(Icons.clear),
                                         color: AppTheme.primaryColor,
                                       )
                                     : null,
@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SliverToBoxAdapter(
             child: Container(
-              margin: EdgeInsets.all(16),
+              margin: const EdgeInsets.all(16),
               height: 40,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -167,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (context, index) {
                   final filter = _categoryFilters[index];
                   return Padding(
-                    padding: EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
                       label: Text(
                         filter,
@@ -196,9 +196,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           SliverPadding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             sliver: _filteredCategories.isEmpty
-                ? SliverToBoxAdapter(
+                ? const SliverToBoxAdapter(
                     child: Center(
                       child: Text(
                         'No categories found',
@@ -211,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 : SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       mainAxisSpacing: 16,
                       crossAxisSpacing: 16,
@@ -231,52 +231,64 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildCategoryCard(Category category, int index) {
     return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryScreen(category: category),),);
-        },
-        child: Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(Icons.quiz, color: AppTheme.primaryColor, size: 48),
-              ),
-              SizedBox(height: 16),
-              Text(
-                category.name,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textPrimaryColor,
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                category.description,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppTheme.textPrimaryColor,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-        ),
-      ),
-    ).animate(delay: Duration(microseconds: 100 * index)).slideY(
-      begin: 0.5,end: 0, duration: Duration(microseconds: 300 )
-    ).fadeIn();
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CategoryScreen(category: category),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.quiz,
+                      color: AppTheme.primaryColor,
+                      size: 48,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    category.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    category.description,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppTheme.textPrimaryColor,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
+        .animate(delay: Duration(microseconds: 100 * index))
+        .slideY(begin: 0.5, end: 0, duration: const Duration(microseconds: 300))
+        .fadeIn();
   }
 }

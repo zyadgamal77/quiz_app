@@ -19,7 +19,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
   int _currentQuestionIndex = 0;
-  Map<int, int?> _selectedAnswers = {};
+  final Map<int, int?> _selectedAnswers = {};
   int _totalMinutes = 0;
   int _remainingSeconds = 0;
   int _remainingMinutes = 0;
@@ -74,7 +74,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
 
   void _completeQuiz() {
     _timer?.cancel();
-    int correctAnswers = _calculateScore();
+    final int correctAnswers = _calculateScore();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Quiz Completed')),
       // Navigator.pushReplacement(context,
@@ -100,7 +100,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
   }
 
   Color _getAnswerColor() {
-    double timeProgress =
+    final double timeProgress =
         1 -
         ((_remainingMinutes * 60 + _remainingSeconds) / (_totalMinutes * 60));
     if (timeProgress < 0.4) return Colors.green;
@@ -125,15 +125,15 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.all(12),
-              padding: EdgeInsets.all(16),
+              margin: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
-                    offset: const Offset(0, 4),
+                    offset: Offset(0, 4),
                     blurRadius: 10,
                   ),
                 ],
@@ -147,7 +147,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: Icon(Icons.close),
+                        icon: const Icon(Icons.close),
                         color: AppTheme.primaryColor,
                       ),
                       Stack(
@@ -179,7 +179,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TweenAnimationBuilder<double>(
                     tween: Tween(
                       begin: 0,
@@ -187,16 +187,16 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
                           (_currentQuestionIndex + 1) /
                           widget.quiz.questions.length,
                     ),
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     builder: (context, progress, child) {
                       return LinearProgressIndicator(
-                        borderRadius: BorderRadius.horizontal(
+                        borderRadius: const BorderRadius.horizontal(
                           left: Radius.circular(10),
                           right: Radius.circular(10),
                         ),
                         value: progress,
                         backgroundColor: Colors.grey[300],
-                        valueColor: AlwaysStoppedAnimation<Color>(
+                        valueColor: const AlwaysStoppedAnimation<Color>(
                           AppTheme.primaryColor,
                         ),
                         minHeight: 6,
@@ -209,7 +209,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: widget.quiz.questions.length,
                 onPageChanged: (index) {
                   setState(() {
@@ -230,15 +230,15 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
 
   Widget _buildQuestionCard(Question question, int index) {
     return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
             blurRadius: 10,
           ),
         ],
@@ -247,23 +247,20 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Question ${index + 1}",
-            style: TextStyle(
+            'Question ${index + 1}',
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: AppTheme.textPrimaryColor,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
-            question.text,  // This shows the actual question
-            style: TextStyle(
-              fontSize: 18,
-              color: AppTheme.textPrimaryColor,
-            ),
+            question.text, // This shows the actual question
+            style: const TextStyle(fontSize: 18, color: AppTheme.textPrimaryColor),
           ),
-          SizedBox(height: 24),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
+          const SizedBox(height: 24),
           ...question.options.asMap().entries.map((entry) {
             final optionIndex = entry.key;
             final option = entry.value;
@@ -271,9 +268,9 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
             final isCorrect =
                 _selectedAnswers[index] == question.correctOptionIndex;
             return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   child: AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 200),
                     decoration: BoxDecoration(
                       color: isCorrect
                           ? isSelected
@@ -291,7 +288,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
                     ),
                     child: ListTile(
                       onTap: _selectedAnswers[index] == null
-                          ? () => _selectAnswer(optionIndex,index)
+                          ? () => _selectAnswer(index, optionIndex)
                           : null,
                       title: Text(
                         option,
@@ -307,23 +304,23 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
                       ),
                       trailing: isSelected
                           ? isCorrect
-                                ? Icon(
+                                ? const Icon(
                                     Icons.check_circle_rounded,
                                     color: AppTheme.secondaryColor,
                                   )
-                                : Icon(Icons.close, color: Colors.redAccent)
+                                : const Icon(Icons.close, color: Colors.redAccent)
                           : null,
                     ),
                   ),
                 )
-                .animate(delay: Duration(milliseconds: 200))
+                .animate(delay: const Duration(milliseconds: 200))
                 .slideX(
                   begin: 0.5,
                   end: 0,
-                  duration: Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 200),
                 );
           }),
-          Spacer(),
+          const Spacer(),
           SizedBox(
             width: double.infinity,
             height: 55,
@@ -333,9 +330,9 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
               },
               child: Text(
                 index == widget.quiz.questions.length - 1
-                    ? "Finish Quiz"
-                    : "Next Question",
-                style: TextStyle(
+                    ? 'Finish Quiz'
+                    : 'Next Question',
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),

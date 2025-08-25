@@ -27,9 +27,9 @@ class QuestionFormItem {
 
   void dispose() {
     questionController.dispose();
-    optionsControllers.forEach((element) {
+    for (var element in optionsControllers) {
       element.dispose();
-    });
+    }
   }
 }
 
@@ -173,10 +173,7 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: AppTheme.primaryColor,
-        title:  Text(
-          "Edit Quiz",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: const Text('Edit Quiz', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Form(
         key: _formKey,
@@ -220,151 +217,148 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
             const SizedBox(height: 24),
 
             // Questions Section
-            ..._questionItems.asMap().entries.map((entry) {
-              final index = entry.key;
-              final question = entry.value;
-              return Card(
-                margin: const EdgeInsets.only(bottom: 16),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Questions',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: AppTheme.textPrimaryColor,
-                            ),
+            Card(
+              margin: const EdgeInsets.only(bottom: 16),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Questions',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: AppTheme.textPrimaryColor,
                           ),
-                          ElevatedButton.icon(
-                            onPressed: _addQuestion,
-                            label: Text('Add Question'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.primaryColor,
-                              foregroundColor: Colors.white,
-                            ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: _addQuestion,
+                          label: const Text('Add Question'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.primaryColor,
+                            foregroundColor: Colors.white,
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      ..._questionItems.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final question = entry.value;
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Question ${index + 1}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: AppTheme.primaryColor,
-                                      ),
-                                    ),
-                                    if (_questionItems.length > 1)
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.delete,
-                                          color: Colors.redAccent,
-                                        ),
-                                        onPressed: () => _removeQuestion(index),
-                                      ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                TextFormField(
-                                  controller: question.questionController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Question title',
-                                    hintText: 'Enter question title',
-                                    prefixIcon: Icon(
-                                      Icons.question_answer,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    ..._questionItems.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final question = entry.value;
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Question ${index + 1}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
                                       color: AppTheme.primaryColor,
                                     ),
-                                    border: OutlineInputBorder(),
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter the question';
-                                    }
-                                    return null;
-                                  },
+                                  if (_questionItems.length > 1)
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.redAccent,
+                                      ),
+                                      onPressed: () => _removeQuestion(index),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: question.questionController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Question title',
+                                  hintText: 'Enter question title',
+                                  prefixIcon: Icon(
+                                    Icons.question_answer,
+                                    color: AppTheme.primaryColor,
+                                  ),
+                                  border: OutlineInputBorder(),
                                 ),
-                                const SizedBox(height: 10),
-                                ...question.optionsControllers.asMap().entries.map((
-                                  optionEntry,
-                                ) {
-                                  final optionIndex = optionEntry.key;
-                                  final controller = optionEntry.value;
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Row(
-                                      children: [
-                                        Radio<int>(
-                                          activeColor: AppTheme.primaryColor,
-                                          value: optionIndex,
-                                          groupValue:
-                                              question.correctOptionIndex,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              question.correctOptionIndex =
-                                                  value!;
-                                            });
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter the question';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 10),
+                              ...question.optionsControllers.asMap().entries.map((
+                                optionEntry,
+                              ) {
+                                final optionIndex = optionEntry.key;
+                                final controller = optionEntry.value;
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Row(
+                                    children: [
+                                      Radio<int>(
+                                        activeColor: AppTheme.primaryColor,
+                                        value: optionIndex,
+                                        groupValue: question.correctOptionIndex,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            question.correctOptionIndex =
+                                                value!;
+                                          });
+                                        },
+                                      ),
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: controller,
+                                          decoration: InputDecoration(
+                                            labelText:
+                                                'Option ${optionIndex + 1}',
+                                            hintText: 'Enter option text',
+                                            border: const OutlineInputBorder(
+                                            ),
+                                          ),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter option text';
+                                            }
+                                            return null;
                                           },
                                         ),
-                                        Expanded(
-                                          child: TextFormField(
-                                            controller: controller,
-                                            decoration: InputDecoration(
-                                              labelText:
-                                                  'Option ${optionIndex + 1}',
-                                              hintText: 'Enter option text',
-                                              border:
-                                                  const OutlineInputBorder(),
-                                            ),
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Please enter option text';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                              ],
-                            ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
+                            ],
                           ),
-                        );
-                      }).toList(),
-                      const SizedBox(height: 32),
-
-                    ],
-                  ),
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 32),
+                  ],
                 ),
-              );
-            }).toList(),
+              ),
+            ),
 
             // Add Question Button
             ElevatedButton(
               onPressed: _addQuestion,
-              child: const Text('Add Question'),
+              child: const Text(
+                'Add Question',
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
             ),
 
             const SizedBox(height: 24),

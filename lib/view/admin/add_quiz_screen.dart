@@ -28,9 +28,9 @@ class QuestionFormItem {
 
   void dispose() {
     questionController.dispose();
-    optionsControllers.forEach((element) {
+    for (var element in optionsControllers) {
       element.dispose();
-    });
+    }
   }
 }
 
@@ -41,7 +41,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool _isLoading = false;
   String? _selectedCategoryId;
-  List<QuestionFormItem> _questionFormItems = [];
+  final List<QuestionFormItem> _questionFormItems = [];
   List<Category> _categories = [];
   bool _isLoadingCategories = false;
 
@@ -118,7 +118,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
     }
   }
 
-  Future<void> _SaveQuiz() async {
+  Future<void> _saveQuiz() async {
     try {
       if (!_formKey.currentState!.validate()) {
         return;
@@ -189,8 +189,8 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Quiz added successfully'),
+          const SnackBar(
+            content: Text('Quiz added successfully'),
             backgroundColor: Colors.green,
           ),
         );
@@ -235,8 +235,8 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
       appBar: AppBar(
         title: Text(
           widget.categoryName != null
-              ? "Add ${widget.categoryName} quiz"
-              : "Add Quiz",
+              ? 'Add ${widget.categoryName} quiz'
+              : 'Add Quiz',
         ),
       ),
       body: Form(
@@ -271,7 +271,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                           vertical: 16,
                           horizontal: 12,
                         ),
-                        prefixIcon: Icon(
+                        prefixIcon: const Icon(
                           Icons.category,
                           color: AppTheme.primaryColor,
                         ),
@@ -288,7 +288,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                                 child: Text(category.name),
                               ),
                             )
-                            .toList(),
+                            ,
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -316,7 +316,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                     ),
                     hintText: 'Enter Quiz Title',
                     labelText: 'Quiz Title',
-                    prefixIcon: Icon(Icons.title, color: AppTheme.primaryColor),
+                    prefixIcon: const Icon(Icons.title, color: AppTheme.primaryColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -341,7 +341,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                     ),
                     hintText: 'Enter Time Limit',
                     labelText: 'Time Limit (in minutes)',
-                    prefixIcon: Icon(Icons.timer, color: AppTheme.primaryColor),
+                    prefixIcon: const Icon(Icons.timer, color: AppTheme.primaryColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -359,14 +359,14 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           'Questions',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -376,7 +376,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                         ),
                         ElevatedButton.icon(
                           onPressed: _addQuestion,
-                          label: Text('Add Question'),
+                          label: const Text('Add Question'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.primaryColor,
                             foregroundColor: Colors.white,
@@ -384,7 +384,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     ..._questionFormItems.asMap().entries.map((entry) {
                       final index = entry.key;
                       final question = entry.value;
@@ -401,7 +401,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                                 children: [
                                   Text(
                                     'Question ${index + 1}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                       color: AppTheme.primaryColor,
@@ -478,25 +478,25 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                                     ],
                                   ),
                                 );
-                              }).toList(),
+                              }),
                             ],
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                     const SizedBox(height: 32),
                     Center(
                       child: SizedBox(
                         height: 50,
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _isLoading ? null : _SaveQuiz,
+                          onPressed: _isLoading ? null : _saveQuiz,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.primaryColor,
                             foregroundColor: Colors.white,
                           ),
                           child: _isLoading
-                              ?  SizedBox(
+                              ?  const SizedBox(
                                   width: 24,
                                   height: 24,
                                   child: CircularProgressIndicator(
@@ -506,7 +506,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                                     strokeWidth: 2,
                                   ),
                                 )
-                              :  Text(
+                              :  const Text(
                                   'Save Quiz',
                                   style: TextStyle(
                                     fontSize: 16,

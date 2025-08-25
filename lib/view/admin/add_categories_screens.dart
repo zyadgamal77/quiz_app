@@ -95,17 +95,17 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
       return await showDialog<bool>(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text("Discard Changes"),
-              content: Text("Are you sure you want to discard changes?"),
+              title: const Text('Discard Changes'),
+              content: const Text('Are you sure you want to discard changes?'),
               actions: [
                 TextButton(
-                  child: Text("Cancel"),
+                  child: const Text('Cancel'),
                   onPressed: () => Navigator.pop(context, false),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context, true),
-                  child: Text(
-                    "Discard",
+                  child: const Text(
+                    'Discard',
                     style: TextStyle(color: Colors.redAccent),
                   ),
                 ),
@@ -124,8 +124,8 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            widget.category == null ? "Add Category" : "Edit Category",
-            style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimaryColor),
+            widget.category == null ? 'Add Category' : 'Edit Category',
+            style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimaryColor),
           ),
         ),
         body: SingleChildScrollView(
@@ -136,31 +136,31 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Category Details",
+                  const Text(
+                    'Category Details',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.textPrimaryColor,
                     ),
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    "Create a new category for organizing your quizzes",
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Create a new category for organizing your quizzes',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.textPrimaryColor,
                     ),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   TextFormField(
                     controller: _nameController,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 20),
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: 20),
                       fillColor: Colors.white,
-                      labelText: " Category Name",
-                      hintText: "Enter category name ",
+                      labelText: ' Category Name',
+                      hintText: 'Enter category name ',
                       prefixIcon: Icon(
                         Icons.category_rounded,
                         color: AppTheme.textPrimaryColor,
@@ -169,16 +169,16 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
                     ),
 
                     validator: (value) =>
-                        value!.isEmpty ? "Please enter category name" : null,
+                        value!.isEmpty ? 'Please enter category name' : null,
                     textInputAction: TextInputAction.next,
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   TextFormField(
                     controller: _descriptionController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       fillColor: Colors.white,
-                      labelText: " Description",
-                      hintText: "Enter category description ",
+                      labelText: ' Description',
+                      hintText: 'Enter category description ',
                       prefixIcon: Icon(
                         Icons.description_rounded,
                         color: AppTheme.textPrimaryColor,
@@ -186,17 +186,17 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
                     ),
                     maxLines: 3,
                     validator: (value) =>
-                        value!.isEmpty ? "Please enter description name" : null,
+                        value!.isEmpty ? 'Please enter description name' : null,
                     textInputAction: TextInputAction.next,
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   SizedBox(
                     height: 50,
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _saveCategory,
                       child: _isLoading
-                          ? SizedBox(
+                          ? const SizedBox(
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(
@@ -208,9 +208,9 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
                             )
                           : Text(
                               widget.category == null
-                                  ? "Update Category"
-                                  : "Add Category",
-                              style: TextStyle(
+                                  ? 'Update Category'
+                                  : 'Add Category',
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),

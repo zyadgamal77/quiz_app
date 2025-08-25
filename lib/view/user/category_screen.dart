@@ -68,7 +68,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(color: AppTheme.primaryColor),
             )
           : _quizzes.isEmpty
@@ -76,25 +76,25 @@ class _CategoryScreenState extends State<CategoryScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.quiz_outlined,
                     size: 64,
                     color: AppTheme.primaryColor,
                   ),
-                  SizedBox(height: 16),
-                  Text(
+                  const SizedBox(height: 16),
+                  const Text(
                     'No quizzes found in this category',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppTheme.textSecondaryColor,
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text(' go Back',style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.textPrimaryColor ),),
+                    child: const Text(' go Back',style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.textPrimaryColor ),),
                   ),
                 ],
               ),
@@ -120,28 +120,28 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       child: Text(
                         widget.category.description,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12, color: Colors.white),
+                        style: const TextStyle(fontSize: 12, color: Colors.white),
                       ),
                     ),
                     background: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.category_rounded,
                             size: 64,
                             color: Colors.white,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Text(
                             widget.category.name,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 24,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 30),
+                          const SizedBox(height: 30),
                         ],
                       ),
                     ),
@@ -152,7 +152,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: _quizzes.length,
                       itemBuilder: (context, index) {
                         final quiz = _quizzes[index];
@@ -168,7 +168,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   Widget _buildQuizCard(Quiz quiz, int index) {
     return Card(
-          margin: EdgeInsets.only(bottom: 16),
+          margin: const EdgeInsets.only(bottom: 16),
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -185,25 +185,25 @@ class _CategoryScreenState extends State<CategoryScreen> {
               child: Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.quiz_rounded,
                       size: 32,
                       color: AppTheme.primaryColor,
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           quiz.title,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: AppTheme.textPrimaryColor,
@@ -212,16 +212,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Row(
                               children: [
-                                Icon(Icons.question_answer_outlined, size: 16),
-                                SizedBox(width: 4),
-                                Text("${quiz.questions.length} Questions"),
-                                SizedBox(width: 16),
-                                Icon(Icons.timer_outlined, size: 16),
-                                SizedBox(width: 4),
-                                Text("${quiz.timeLimit} mins"),
+                                const Icon(Icons.question_answer_outlined, size: 16),
+                                const SizedBox(width: 4),
+                                Text('${quiz.questions.length} Questions'),
+                                const SizedBox(width: 16),
+                                const Icon(Icons.timer_outlined, size: 16),
+                                const SizedBox(width: 4),
+                                Text('${quiz.timeLimit} mins'),
                               ],
                             ),
                           ],
@@ -229,7 +229,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       ],
                     ),
                   ),
-                  Icon(
+                  const Icon(
                     Icons.chevron_right_rounded,
                     size: 30,
                     color: AppTheme.primaryColor,
@@ -240,7 +240,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         )
         .animate(delay: Duration(milliseconds: index * 50))
-        .slideX(begin: 0.5, end: 0, duration: Duration(milliseconds: 200))
+        .slideX(begin: 0.5, end: 0, duration: const Duration(milliseconds: 200))
         .fadeIn();
   }
 }

@@ -22,8 +22,8 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
-        title: Text(
-          "Manage Categories",
+        title: const Text(
+          'Manage Categories',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
@@ -32,11 +32,11 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add_circle_outline, color: AppTheme.primaryColor),
+            icon: const Icon(Icons.add_circle_outline, color: AppTheme.primaryColor),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddCategoriesScreens()),
+                MaterialPageRoute(builder: (context) => const AddCategoriesScreens()),
               );
             },
           ),
@@ -46,10 +46,10 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
         stream: _firestore.collection('categories').orderBy('name').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('An error occurred'));
+            return const Center(child: Text('An error occurred'));
           }
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(color: AppTheme.primaryColor),
             );
           }
@@ -66,31 +66,31 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.category_outlined,
                     size: 64,
                     color: AppTheme.secondaryColor,
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    "No categories found",
+                  const SizedBox(height: 16),
+                  const Text(
+                    'No categories found',
                     style: TextStyle(
                       color: AppTheme.textPrimaryColor,
                       fontSize: 18,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AddCategoriesScreens(),
+                          builder: (context) => const AddCategoriesScreens(),
                         ),
                       );
                     },
-                    child: Text(
-                      "Add Category",
+                    child: const Text(
+                      'Add Category',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -100,21 +100,21 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
           }
 
           return ListView.builder(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             itemCount: categories.length,
             itemBuilder: (context, index) {
               final Category category = categories[index];
               return Card(
-                margin: EdgeInsets.only(bottom: 16),
+                margin: const EdgeInsets.only(bottom: 16),
                 child: ListTile(
-                  contentPadding: EdgeInsets.all(16),
+                  contentPadding: const EdgeInsets.all(16),
                   leading: Container(
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.category_outlined,
                       color: AppTheme.primaryColor,
                       size: 32,
@@ -122,26 +122,26 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                   ),
                   title: Text(
                     category.name,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   subtitle: Text(category.description),
                   trailing: PopupMenuButton(
                     itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: "edit",
+                      const PopupMenuItem(
+                        value: 'edit',
                         child: ListTile(
                           leading: Icon(
                             Icons.edit,
                             color: AppTheme.primaryColor,
                           ),
-                          title: Text("Edit"),
+                          title: Text('Edit'),
                         ),
                       ),
-                      PopupMenuItem(
-                        value: "delete",
+                      const PopupMenuItem(
+                        value: 'delete',
                         child: ListTile(
                           leading: Icon(Icons.delete, color: Colors.redAccent),
-                          title: Text("delete"),
+                          title: Text('delete'),
                         ),
                       ),
                     ],
@@ -183,15 +183,15 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Delete Category"),
-          content: Text("Are you sure you want to delete this category?"),
+          title: const Text('Delete Category'),
+          content: const Text('Are you sure you want to delete this category?'),
           actions: [
             TextButton(
-              child: Text("Cancel"),
+              child: const Text('Cancel'),
               onPressed: () => Navigator.pop(context, false),
             ),
             TextButton(
-              child: Text("Delete", style: TextStyle(color: Colors.redAccent)),
+              child: const Text('Delete', style: TextStyle(color: Colors.redAccent)),
               onPressed: () => Navigator.pop(context, true),
             ),
           ],

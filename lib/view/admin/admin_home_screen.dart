@@ -56,12 +56,12 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 .get();
 
             return {
-              'name': category.data()?['name'] ?? 'Unnamed Category',
+              'name': category.data()['name'] ?? 'Unnamed Category',
               'count': quizCount.count,
             };
           } catch (e) {
             return {
-              'name': category.data()?['name'] ?? 'Unnamed Category',
+              'name': category.data()['name'] ?? 'Unnamed Category',
               'count': 0,
             };
           }
@@ -88,8 +88,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Admin Dashboard",
+        title: const Text(
+          'Admin Dashboard',
           textAlign: TextAlign.center,
           style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30,),
         ),
@@ -109,7 +109,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           );
         }
         if (snapshot.hasError) {
-          return Center(child: Text('An error occurred'));
+          return const Center(child: Text('An error occurred'));
         }
 
         final Map<String, dynamic> stats = snapshot.data!;
@@ -119,20 +119,20 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
         return SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Welcome Admin",
+                const Text(
+                  'Welcome Admin',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
                     color: AppTheme.textPrimaryColor,
                   ),
                 ),
-                SizedBox(height: 8),
-                Text(
+                const SizedBox(height: 8),
+                const Text(
                   "Here's your quiz application overview",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -140,21 +140,21 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     color: AppTheme.textSecondaryColor,
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Row(
                   children: [
                     Expanded(
                       child: StatCard(
-                        title: "Total Categories",
+                        title: 'Total Categories',
                         value: stats['totalCategories'].toString(),
                         icon: Icons.category_rounded,
                         color: AppTheme.primaryColor,
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: StatCard(
-                        title: "Total Quizzes",
+                        title: 'Total Quizzes',
                         value: stats['totalQuizzes'].toString(),
                         icon: Icons.quiz_rounded,
                         color: AppTheme.secondaryColor,
@@ -162,15 +162,15 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 CategoriesStatisticsCard(categoryData: categoryData),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 RecentActivityCard(
                   latestQuizzes: latestQuizzes,
                   formatDate: _formatDate,
                 ),
-                SizedBox(height: 24),
-                QuizActionCard(),
+                const SizedBox(height: 24),
+                const QuizActionCard(),
               ],
             ),
           ),

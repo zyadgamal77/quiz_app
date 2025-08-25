@@ -4,7 +4,6 @@ import 'package:quiz_app/model/quiz.dart';
 import 'package:quiz_app/view/admin/edit_quiz_screen.dart';
 import '../../model/category.dart';
 import '../../theme/theme.dart';
-import 'add_categories_screens.dart';
 import 'add_quiz_screen.dart';
 
 class ManageQuizzesScreen extends StatefulWidget {
@@ -45,20 +44,20 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
         if (widget.categoryId != null) {
           _initialCategory = _categories.firstWhere(
             (category) => category.id == widget.categoryId,
-            orElse: () => Category(id: '', name: "Unknown", description: ''),
+            orElse: () => Category(id: '', name: 'Unknown', description: ''),
           );
           _selectedCategoryId = _initialCategory!.id;
           selectedCategoryId = _selectedCategoryId;
         }
       });
     } catch (e) {
-      print("Error fetching categories: $e");
+      print('Error fetching categories: $e');
     }
   }
 
   Stream<QuerySnapshot> _getQuizStream() {
     Query query = _firestore.collection('quizzes');
-    String? filterCategoryId = _selectedCategoryId ?? widget.categoryId;
+    final String? filterCategoryId = _selectedCategoryId ?? widget.categoryId;
 
     if (filterCategoryId != null) {
       query = query.where('categoryId', isEqualTo: filterCategoryId);
@@ -72,11 +71,11 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
   }
 
   Widget _bulidTitle() {
-    String? categoryId = _selectedCategoryId ?? widget.categoryId;
+    final String? categoryId = _selectedCategoryId ?? widget.categoryId;
     if (categoryId == null) {
-      return Center(
+      return const Center(
         child: Text(
-          "All Quizzes",
+          'All Quizzes',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: AppTheme.textPrimaryColor,
@@ -85,11 +84,11 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
       );
     }
     return StreamBuilder<DocumentSnapshot>(
-      stream: _firestore.collection("categories").doc(categoryId).snapshots(),
+      stream: _firestore.collection('categories').doc(categoryId).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData || !snapshot.data!.exists) {
-          return Text(
-            "Loading...",
+          return const Text(
+            'Loading...',
             style: TextStyle(fontWeight: FontWeight.bold),
           );
         }
@@ -101,7 +100,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
 
         return Text(
           category.name,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         );
       },
     );
@@ -114,7 +113,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
         title: _bulidTitle(),
         actions: [
           IconButton(
-            icon: Icon(Icons.add_circle_outline),
+            icon: const Icon(Icons.add_circle_outline),
             onPressed: () {
               Navigator.push(
                 context,
@@ -132,13 +131,13 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 fillColor: Colors.white,
-                hintText: "Search Quizzes",
-                prefixIcon: Icon(Icons.search),
+                hintText: 'Search Quizzes',
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -153,28 +152,28 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
           Padding(
             padding: const EdgeInsets.all(12),
             child: DropdownButtonFormField<String>(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 fillColor: Colors.white,
                 contentPadding: EdgeInsets.symmetric(
                   vertical: 10,
                   horizontal: 18,
                 ),
                 border: OutlineInputBorder(),
-                hintText: "Category",
+                hintText: 'Category',
               ),
               value: _selectedCategoryId,
               items: [
-                DropdownMenuItem(child: Text("All Categories"), value: null),
+                const DropdownMenuItem(value: null, child: Text('All Categories')),
                 if (_initialCategory != null &&
                     _categories.every((c) => c.id != _initialCategory!.id))
                   DropdownMenuItem(
-                    child: Text(_initialCategory!.name),
                     value: _initialCategory!.id,
+                    child: Text(_initialCategory!.name),
                   ),
                 ..._categories.map(
                   (category) => DropdownMenuItem(
-                    child: Text(category.name),
                     value: category.id,
+                    child: Text(category.name),
                   ),
                 ),
               ],
@@ -191,11 +190,11 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Center(
-                    child: Text("An Error Occurred: ${snapshot.error}"),
+                    child: Text('An Error Occurred: ${snapshot.error}'),
                   );
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(
                       color: AppTheme.primaryColor,
                     ),
@@ -205,7 +204,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                     .map<Quiz?>((doc) {
                       try {
                         final data = doc.data() as Map<String, dynamic>;
-                        return Quiz.fromMap({'id': doc.id, ...data}, data);
+                        return Quiz.fromMap({'id': doc.id, ...data},);
                       } catch (e) {
                         print('Error parsing quiz ${doc.id}: $e');
                         return null;
@@ -224,22 +223,22 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 20)),
-                        Icon(
+                        const Padding(padding: EdgeInsets.symmetric(horizontal: 20)),
+                        const Icon(
                           Icons.quiz_outlined,
                           color: AppTheme.secondaryColor,
                           size: 64,
                         ),
-                        SizedBox(height: 16),
-                        Text(
-                          "No quizzes yet",
+                        const SizedBox(height: 16),
+                        const Text(
+                          'No quizzes yet',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: AppTheme.textPrimaryColor,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: () {
                             Navigator.push(
@@ -252,7 +251,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                               ),
                             );
                           },
-                          child: Text("Add Quiz"),
+                          child: const Text('Add Quiz'),
                         ),
                       ],
                     ),
@@ -263,23 +262,23 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                   itemBuilder: (context, index) {
                     final Quiz quiz = quizzes[index];
                     return Card(
-                      margin: EdgeInsets.only(bottom: 12),
+                      margin: const EdgeInsets.only(bottom: 12),
                       child: ListTile(
-                        contentPadding: EdgeInsets.all(16),
+                        contentPadding: const EdgeInsets.all(16),
                         leading: Container(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: AppTheme.primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.quiz_rounded,
                             color: AppTheme.primaryColor,
                           ),
                         ),
                         title: Text(
                           quiz.title,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -287,27 +286,27 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.question_answer_outlined,
                                   size: 20,
                                   color: AppTheme.textSecondaryColor,
                                 ),
-                                SizedBox(width: 4),
-                                Text("${quiz.questions.length} Questions"),
-                                SizedBox(width: 16),
-                                Icon(Icons.timer_outlined, size: 20),
-                                SizedBox(width: 4),
-                                Text("${quiz.timeLimit} Min"),
+                                const SizedBox(width: 4),
+                                Text('${quiz.questions.length} Questions'),
+                                const SizedBox(width: 16),
+                                const Icon(Icons.timer_outlined, size: 20),
+                                const SizedBox(width: 4),
+                                Text('${quiz.timeLimit} Min'),
                               ],
                             ),
                           ],
                         ),
                         trailing: PopupMenuButton(
                           itemBuilder: (context) => [
-                            PopupMenuItem(
+                            const PopupMenuItem(
                               value: 'edit',
                               child: ListTile(
                                 contentPadding: EdgeInsets.zero,
@@ -315,10 +314,10 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                                   Icons.edit_outlined,
                                   color: AppTheme.primaryColor,
                                 ),
-                                title: Text("Edit"),
+                                title: Text('Edit'),
                               ),
                             ),
-                            PopupMenuItem(
+                            const PopupMenuItem(
                               value: 'delete',
                               child: ListTile(
                                 contentPadding: EdgeInsets.zero,
@@ -326,7 +325,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                                   Icons.delete_outlined,
                                   color: Colors.redAccent,
                                 ),
-                                title: Text("delete"),
+                                title: Text('delete'),
                               ),
                             ),
                           ],
@@ -359,17 +358,17 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Delete Quiz"),
-          content: Text("Are you sure you want to delete this quiz?"),
+          title: const Text('Delete Quiz'),
+          content: const Text('Are you sure you want to delete this quiz?'),
           actions: [
             TextButton(
-              child: Text("Cancel"),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.pop(context, false);
               },
             ),
             TextButton(
-              child: Text("Delete", style: TextStyle(color: Colors.redAccent)),
+              child: const Text('Delete', style: TextStyle(color: Colors.redAccent)),
               onPressed: () {
                 Navigator.pop(context, true);
               },

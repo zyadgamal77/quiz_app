@@ -14,16 +14,16 @@ class CategoriesStatisticsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.pie_chart_rounded,
                   color: AppTheme.primaryColor,
                   size: 24,
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Text(
-                  "Categories Statistics",
+                  'Categories Statistics',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -86,10 +86,10 @@ class CategoriesStatisticsCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            "${percentage.toStringAsFixed(1)}%",
+                            '${percentage.toStringAsFixed(1)}%',
                             style: const TextStyle(
                               fontWeight: FontWeight.w500,
-                              color: AppTheme.primaryColor,
+                              color: Colors.white,
                             ),
                           ),
                         ),

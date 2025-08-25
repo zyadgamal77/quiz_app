@@ -12,11 +12,11 @@ class QuizActionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(
                   Icons.speed_rounded,
@@ -26,7 +26,7 @@ class QuizActionCard extends StatelessWidget {
 
                 SizedBox(width: 12),
                 Text(
-                  "Quiz Action",
+                  'Quiz Action',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -47,7 +47,7 @@ class QuizActionCard extends StatelessWidget {
                 children: [
                   DashboardCard(
                     context: context,
-                    title: "Create Quiz",
+                    title: 'Create Quiz',
                     icon: Icons.add_rounded,
                     onTap: () {
                       Navigator.pushNamed(context, '/create-quiz');
@@ -55,26 +55,26 @@ class QuizActionCard extends StatelessWidget {
                   ),
                   DashboardCard(
                     context: context,
-                    title: "Quizzes",
+                    title: 'Quizzes',
                     icon: Icons.quiz_rounded,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ManageQuizzesScreen(),
+                          builder: (context) => const ManageQuizzesScreen(),
                         ),
                       );
                     },
                   ),
                   DashboardCard(
                     context: context,
-                    title: "Categories",
+                    title: 'Categories',
                     icon: Icons.category_rounded,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ManageCategoriesScreen(),
+                          builder: (context) => const ManageCategoriesScreen(),
                         ),
                       );
                     },

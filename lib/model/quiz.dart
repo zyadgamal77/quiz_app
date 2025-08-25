@@ -19,11 +19,11 @@ class Quiz {
     this.updatedAt,
   });
 
-  factory Quiz.fromMap(Map<String, dynamic> map, Map<String, dynamic> data) {
+  factory Quiz.fromMap(Map<String, dynamic> map) {
     return Quiz(
       id: map['id'],
-      title: map['title'] ?? "",
-      categoryId: map['categoryId'] ?? "",
+      title: map['title'] ?? '',
+      categoryId: map['categoryId'] ?? '',
       timeLimit: map['timeLimit'] ?? 0,
       questions: ((map['questions'] ?? []) as List)
           .map((e) => Question.fromMap(e))
