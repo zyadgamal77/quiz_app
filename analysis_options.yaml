@@ -21,28 +21,5 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    # ✅ تحسين الأداء
-    - prefer_const_constructors
-    - prefer_const_constructors_in_immutables
-    - prefer_const_literals_to_create_immutables
-
-    # ✅ تنظيف الكود
-    - avoid_unused_constructor_parameters
-    - unnecessary_const
-    - unnecessary_new
-    -
-    # ✅ كتابة كود منظم
-    - camel_case_types
-    - non_constant_identifier_names
-    - library_prefixes
-    - prefer_final_fields
-    - prefer_final_locals
-    - prefer_single_quotes
-    - sort_child_properties_last
-
-    # ✅ حاجات تحافظ على جودة الكود
-    - use_key_in_widget_constructors
-    - always_declare_return_types
-    - annotate_overrides
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

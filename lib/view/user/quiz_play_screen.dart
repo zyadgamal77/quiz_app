@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quiz_app/model/quiz.dart';
 import 'package:quiz_app/theme/theme.dart';
+import 'package:quiz_app/view/user/quiz_result_screen.dart';
 
 import '../../model/question.dart';
 
@@ -19,7 +20,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
   int _currentQuestionIndex = 0;
-  final Map<int, int?> _selectedAnswers = {};
+  Map<int, int> _selectedAnswers = {};
   int _totalMinutes = 0;
   int _remainingSeconds = 0;
   int _remainingMinutes = 0;
@@ -36,14 +37,14 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         if (_remainingSeconds > 0) {
           _remainingSeconds--;
         } else {
           if (_remainingMinutes > 0) {
-            _remainingSeconds = 59;
             _remainingMinutes--;
+            _remainingSeconds = 59;
           } else {
             _timer?.cancel();
             _completeQuiz();
@@ -53,18 +54,16 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
     });
   }
 
-  void _selectAnswer(int questionIndex, int optionIndex) {
-    if (_selectedAnswers[questionIndex] == null) {
-      setState(() {
-        _selectedAnswers[questionIndex] = optionIndex;
-      });
-    }
+  void _selectAnswer(int optionIndex) {
+    setState(() {
+      _selectedAnswers[_currentQuestionIndex] = optionIndex;
+    });
   }
 
   void _nextQuestion() {
     if (_currentQuestionIndex < widget.quiz.questions.length - 1) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
+        duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     } else {
@@ -75,15 +74,18 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
   void _completeQuiz() {
     _timer?.cancel();
     final int correctAnswers = _calculateScore();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Quiz Completed')),
-      // Navigator.pushReplacement(context,
-      // MaterialPageRoute(builder: QuizResultScreen(
-      //   quiz: widget.quiz,
-      //   totalQuestions: widget.quiz.questions.length,
-      //   correctAnswers: correctAnswers,
-      //   selectedAnswers: _selectedAnswers,
-      // )));
+    //ScaffoldMessenger.of(context).showSnackBar(
+    // const SnackBar(content: Text('Quiz Completed')),
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizResultScreen(
+          quiz: widget.quiz,
+          totalQuestions: widget.quiz.questions.length,
+          correctAnswers: correctAnswers,
+          selectedAnswers: _selectedAnswers,
+        ),
+      ),
     );
   }
 
@@ -257,7 +259,10 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
           const SizedBox(height: 8),
           Text(
             question.text, // This shows the actual question
-            style: const TextStyle(fontSize: 18, color: AppTheme.textPrimaryColor),
+            style: const TextStyle(
+              fontSize: 18,
+              color: AppTheme.textPrimaryColor,
+            ),
           ),
           const SizedBox(height: 24),
           const SizedBox(height: 24),
@@ -287,9 +292,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
                       ),
                     ),
                     child: ListTile(
-                      onTap: _selectedAnswers[index] == null
-                          ? () => _selectAnswer(index, optionIndex)
-                          : null,
+                      onTap: () => _selectAnswer(optionIndex),
                       title: Text(
                         option,
                         style: TextStyle(
@@ -308,7 +311,10 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
                                     Icons.check_circle_rounded,
                                     color: AppTheme.secondaryColor,
                                   )
-                                : const Icon(Icons.close, color: Colors.redAccent)
+                                : const Icon(
+                                    Icons.close,
+                                    color: Colors.redAccent,
+                                  )
                           : null,
                     ),
                   ),

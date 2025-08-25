@@ -4,6 +4,7 @@ import 'package:quiz_app/view/admin/manage_quizzes_screen.dart';
 import 'package:quiz_app/theme/theme.dart';
 
 import 'dashboard_card.dart';
+import 'package:quiz_app/view/admin/add_quiz_screen.dart';
 
 class QuizActionCard extends StatelessWidget {
   const QuizActionCard({super.key});
@@ -50,7 +51,12 @@ class QuizActionCard extends StatelessWidget {
                     title: 'Create Quiz',
                     icon: Icons.add_rounded,
                     onTap: () {
-                      Navigator.pushNamed(context, '/create-quiz');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddQuizScreen(),
+                        ),
+                      );
                     },
                   ),
                   DashboardCard(
