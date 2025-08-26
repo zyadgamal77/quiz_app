@@ -60,23 +60,53 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<bool> _showLogoutConfirmation() async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to log out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+    return shouldLogout ?? false;
+  }
+
   Future<void> _signOut() async {
-    try {
-      final authService = Provider.of<AuthService>(context, listen: false);
-      await authService.signOut();
-      // Navigation is handled by AuthWrapper
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error signing out')),
-        );
+    final shouldLogout = await _showLogoutConfirmation();
+    if (shouldLogout) {
+      try {
+        final authService = Provider.of<AuthService>(context, listen: false);
+        await authService.signOut();
+        // Navigation is handled by AuthWrapper
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error occurred while signing out')),
+          );
+        }
       }
     }
   }
 
+  Future<bool> _onWillPop() async {
+    return await _showLogoutConfirmation();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: CustomScrollView(
         slivers: [
@@ -249,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-    );
+    ),);
   }
 
   Widget _buildCategoryCard(Category category, int index) {

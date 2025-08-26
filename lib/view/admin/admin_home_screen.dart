@@ -138,7 +138,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         final Map<String, dynamic> stats = snapshot.data!;
         final List<dynamic> categoryData = stats['categoryData'];
         final List<QueryDocumentSnapshot> latestQuizzes =
-            stats['latestQuizzes'];
+        stats['latestQuizzes'];
 
         return SafeArea(
           child: SingleChildScrollView(
@@ -193,7 +193,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   formatDate: _formatDate,
                 ),
                 const SizedBox(height: 24),
-                const QuizActionCard(),
+                const QuizActionCard(
+
+                ),
               ],
             ),
           ),

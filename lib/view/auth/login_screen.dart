@@ -107,21 +107,31 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: Text('${widget.role.toUpperCase()} Login'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.logout),
           onPressed: () => Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(height: 40),
+                const Text(
+                  'Smart Quiz',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primaryColor,
+                  ),
+                ),
                 const SizedBox(height: 40),
                 const Text(
                   'Welcome Back!',
