@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/auth_service.dart';
 import 'package:quiz_app/theme/theme.dart';
@@ -39,30 +41,49 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      debugPrint('Attempting to log in...');
+      
+      // Sign in the user
       await _authService.signInWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
 
+      debugPrint('User signed in, getting role...');
+      
+      // Get the user role after successful login
       final userRole = await _authService.getUserRole();
+      debugPrint('Retrieved user role: $userRole');
       
-      if (!mounted) return;
+      if (!mounted) {
+        debugPrint('Widget not mounted, returning early');
+        return;
+      }
       
+      // Navigate based on role
       if (userRole == 'admin') {
+        debugPrint('Navigating to AdminHomeScreen');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const AdminHomeScreen()),
         );
       } else {
+        debugPrint('Navigating to HomeScreen');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
       }
     } catch (e) {
-      setState(() {
-        _errorMessage = _getErrorMessage(e.toString());
-      });
+      debugPrint('Login error: $e');
+      final errorMessage = _getErrorMessage(e.toString());
+      debugPrint('Error message: $errorMessage');
+      
+      if (mounted) {
+        setState(() {
+          _errorMessage = errorMessage;
+        });
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

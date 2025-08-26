@@ -51,7 +51,10 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
+        debugPrint('Auth state changed. Has data: ${snapshot.hasData}');
+        
         if (snapshot.connectionState == ConnectionState.waiting) {
+          debugPrint('Waiting for auth state...');
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -61,10 +64,15 @@ class AuthWrapper extends StatelessWidget {
 
         // If user is logged in, check their role and navigate accordingly
         if (snapshot.hasData) {
+          debugPrint('User is logged in. UID: ${snapshot.data?.uid}');
+          
           return FutureBuilder<String?>(
             future: authService.getUserRole(),
             builder: (context, roleSnapshot) {
+              debugPrint('Role snapshot state: ${roleSnapshot.connectionState}');
+              
               if (roleSnapshot.connectionState == ConnectionState.waiting) {
+                debugPrint('Waiting for user role...');
                 return const Scaffold(
                   body: Center(
                     child: CircularProgressIndicator(),
@@ -73,10 +81,13 @@ class AuthWrapper extends StatelessWidget {
               }
 
               final role = roleSnapshot.data;
+              debugPrint('User role determined: $role');
               
               if (role == 'admin') {
+                debugPrint('Navigating to AdminHomeScreen');
                 return const AdminHomeScreen();
               } else {
+                debugPrint('Navigating to HomeScreen');
                 return const HomeScreen();
               }
             },
