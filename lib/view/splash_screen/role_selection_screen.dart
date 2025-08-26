@@ -16,7 +16,7 @@ class RoleSelectionScreen extends StatelessWidget {
               'Smart Quiz',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 45,
+                fontSize: 50,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.primaryColor,
               ),
