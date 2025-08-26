@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_app/services/auth_service.dart';
 import 'package:quiz_app/theme/theme.dart';
-import 'package:quiz_app/view/auth/login_screen.dart';
 import 'package:quiz_app/view/splash_screen/role_selection_screen.dart';
+import 'package:quiz_app/view/splash_screen/splash_screen.dart';
 import 'firebase_options.dart';
 import 'view/admin/admin_home_screen.dart';
 import 'view/user/home_screen.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Smart Quiz',
       theme: AppTheme.theme,
-      home: const AuthWrapper(),
+      home: const SplashScreen(),
     );
   }
 }
@@ -95,7 +95,7 @@ class AuthWrapper extends StatelessWidget {
         }
 
         // If user is not logged in, show the role selection screen
-        return const RoleSelectionScreen();
+        return const SplashScreen();
       },
     );
   }

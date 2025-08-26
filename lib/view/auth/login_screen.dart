@@ -128,13 +128,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 32,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w300,
                     color: AppTheme.primaryColor,
                   ),
                 ),
                 const SizedBox(height: 40),
                 const Text(
-                  'Welcome Back!',
+                  'Welcome to Quiz App',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
