@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/services/auth_service.dart';
 import '../../theme/theme.dart';
 import '../../widgets/categories_statistics_card.dart';
 import '../../widgets/quiz_action_card.dart';
@@ -84,6 +86,20 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     return '${date.day}/${date.month}/${date.year}';
   }
 
+  Future<void> _signOut() async {
+    try {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      await authService.signOut();
+      // Navigation is handled by AuthWrapper
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error signing out')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,8 +107,15 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         title: const Text(
           'Admin Dashboard',
           textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30,),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _signOut,
+            tooltip: 'Logout',
+          ),
+        ],
         elevation: 0,
       ),
       body: _buildBody(),

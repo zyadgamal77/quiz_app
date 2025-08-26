@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quiz_app/model/quiz.dart';
 import 'package:quiz_app/theme/theme.dart';
+import 'package:quiz_app/view/user/quiz_result_screen.dart';
 
 import '../../model/question.dart';
 
@@ -19,7 +20,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
   int _currentQuestionIndex = 0;
-  final Map<int, int?> _selectedAnswers = {};
+  final Map<int, int> _selectedAnswers = {};
   int _totalMinutes = 0;
   int _remainingSeconds = 0;
   int _remainingMinutes = 0;
@@ -75,15 +76,16 @@ class _QuizPlayScreenState extends State<QuizPlayScreen>
   void _completeQuiz() {
     _timer?.cancel();
     final int correctAnswers = _calculateScore();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Quiz Completed')),
-      // Navigator.pushReplacement(context,
-      // MaterialPageRoute(builder: QuizResultScreen(
-      //   quiz: widget.quiz,
-      //   totalQuestions: widget.quiz.questions.length,
-      //   correctAnswers: correctAnswers,
-      //   selectedAnswers: _selectedAnswers,
-      // )));
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizResultScreen(
+          quiz: widget.quiz,
+          totalQuestions: widget.quiz.questions.length,
+          correctAnswers: correctAnswers,
+          selectedAnswers: _selectedAnswers,
+        ),
+      ),
     );
   }
 

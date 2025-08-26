@@ -261,7 +261,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                     const Text('No categories available')
                   else
                     DropdownButtonFormField<String>(
-                      initialValue: _selectedCategoryId,
+                      value: _selectedCategoryId,
                       decoration: InputDecoration(
                         labelText: 'Category',
                         border: OutlineInputBorder(

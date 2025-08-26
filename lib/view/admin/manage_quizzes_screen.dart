@@ -161,7 +161,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
                 border: OutlineInputBorder(),
                 hintText: 'Category',
               ),
-              initialValue: _selectedCategoryId,
+              value: _selectedCategoryId,
               items: [
                 const DropdownMenuItem(value: null, child: Text('All Categories')),
                 if (_initialCategory != null &&

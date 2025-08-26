@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/services/auth_service.dart';
 import 'package:quiz_app/theme/theme.dart';
 
 import '../../model/category.dart';
@@ -58,6 +60,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> _signOut() async {
+    try {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      await authService.signOut();
+      // Navigation is handled by AuthWrapper
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error signing out')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +84,13 @@ class _HomeScreenState extends State<HomeScreen> {
             expandedHeight: 230,
             pinned: true,
             floating: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: _signOut,
+                tooltip: 'Logout',
+              ),
+            ],
             centerTitle: false,
             backgroundColor: AppTheme.primaryColor,
             elevation: 0,
