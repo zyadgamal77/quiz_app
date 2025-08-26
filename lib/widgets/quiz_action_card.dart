@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/view/admin/manage_categories_screen.dart';
 import 'package:quiz_app/view/admin/manage_quizzes_screen.dart';
 import 'package:quiz_app/theme/theme.dart';
-
 import 'dashboard_card.dart';
 import 'package:quiz_app/view/admin/add_quiz_screen.dart';
 
