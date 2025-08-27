@@ -24,7 +24,7 @@ class RoleSelectionScreen extends StatelessWidget {
             const SizedBox(height: 70),
             const Text(
               'Please Select Your Role',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,),
             ),
             const SizedBox(height: 50),
             _buildRoleButton(

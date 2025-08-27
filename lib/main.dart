@@ -37,6 +37,9 @@ class MyApp extends StatelessWidget {
       title: 'Smart Quiz',
       theme: AppTheme.theme,
       home: const SplashScreen(),
+      routes: {
+        '/auth': (context) => const AuthWrapper(),
+      },
     );
   }
 }
@@ -95,7 +98,7 @@ class AuthWrapper extends StatelessWidget {
         }
 
         // If user is not logged in, show the role selection screen
-        return const SplashScreen();
+        return const RoleSelectionScreen();
       },
     );
   }
