@@ -25,14 +25,18 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           .collection('categories')
           .count()
           .get()
-          .catchError((error) => throw Exception('Failed to load categories count'));
+          .catchError(
+            (error) => throw Exception('Failed to load categories count'),
+          );
 
       // Get quizzes count
       final quizzesCount = await _firestore
           .collection('quizzes')
           .count()
           .get()
-          .catchError((error) => throw Exception('Failed to load quizzes count'));
+          .catchError(
+            (error) => throw Exception('Failed to load quizzes count'),
+          );
 
       // Get latest quizzes
       final latestQuizzes = await _firestore
@@ -40,7 +44,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           .orderBy('createdAt', descending: true)
           .limit(5)
           .get()
-          .catchError((error) => throw Exception('Failed to load latest quizzes'));
+          .catchError(
+            (error) => throw Exception('Failed to load latest quizzes'),
+          );
 
       // Get categories
       final categories = await _firestore
@@ -86,39 +92,121 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     return '${date.day}/${date.month}/${date.year}';
   }
 
+  Future<bool> _showLogoutConfirmation() async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Log Out',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text(
+          'Are you sure you want to log out?',
+          style: TextStyle(color: Colors.black, fontSize: 16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text(
+              'No',
+              style: TextStyle(color: Colors.redAccent, fontSize: 16),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text(
+              'yes',
+              style: TextStyle(color: Colors.green, fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    );
+    return shouldLogout ?? false;
+  }
+
   Future<void> _signOut() async {
-    try {
-      final authService = Provider.of<AuthService>(context, listen: false);
-      await authService.signOut();
-      // Navigation is handled by AuthWrapper
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error signing out')),
-        );
+    final shouldLogout = await _showLogoutConfirmation();
+    if (shouldLogout) {
+      try {
+        final authService = Provider.of<AuthService>(context, listen: false);
+        await authService.signOut();
+        // Navigation is handled by AuthWrapper
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Error logging out')));
+        }
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Admin Dashboard',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _signOut,
-            tooltip: 'Logout',
+    return WillPopScope(
+      onWillPop: () async {
+        // Show a dialog to confirm exit
+        final shouldPop = await showDialog<bool>(
+          barrierDismissible:  false,
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text(
+              'Exit App',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: const Text(
+              'Are you sure you want to exit the app?',
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            ),
+            actions: [
+              TextButton(
+
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text(
+                  'No',
+                  style: TextStyle(color: Colors.redAccent, fontSize: 16),
+                ),
+              ),
+              TextButton(
+
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(color: Colors.green, fontSize: 16),
+                ),
+              ),
+            ],
           ),
-        ],
-        elevation: 0,
+        );
+        return shouldPop ?? false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Admin Dashboard',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: _signOut,
+              tooltip: 'Logout',
+            ),
+          ],
+          elevation: 0,
+        ),
+        body: _buildBody(),
       ),
-      body: _buildBody(),
     );
   }
 
@@ -138,7 +226,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         final Map<String, dynamic> stats = snapshot.data!;
         final List<dynamic> categoryData = stats['categoryData'];
         final List<QueryDocumentSnapshot> latestQuizzes =
-        stats['latestQuizzes'];
+            stats['latestQuizzes'];
 
         return SafeArea(
           child: SingleChildScrollView(
@@ -193,9 +281,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   formatDate: _formatDate,
                 ),
                 const SizedBox(height: 24),
-                const QuizActionCard(
-
-                ),
+                const QuizActionCard(),
               ],
             ),
           ),

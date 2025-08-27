@@ -142,8 +142,8 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                             child: Text(
                               'Smart Quiz',
-                              style: TextStyle(
-                                color: const Color(0xff0069ca),
+                              style: const TextStyle(
+                                color: Color(0xff0069ca),
                                 fontSize: 36,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 1.5,
@@ -152,7 +152,6 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                         ),
                       ),
-                      // Loading Indicator
                     ],
                   ),
                 ),
