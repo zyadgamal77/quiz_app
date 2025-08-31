@@ -7,6 +7,7 @@ import '../../widgets/categories_statistics_card.dart';
 import '../../widgets/quiz_action_card.dart';
 import '../../widgets/recent_activity_card.dart';
 import '../../widgets/stat_card.dart';
+import '../splash_screen/role_selection_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -92,118 +93,84 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  Future<bool> _showLogoutConfirmation() async {
-    final shouldLogout = await showDialog<bool>(
+  Future<bool> _onWillPop(BuildContext context) async {
+    final shouldPop = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(
-          'Log Out',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: const Text(
-          'Are you sure you want to log out?',
-          style: TextStyle(color: Colors.black, fontSize: 16),
-        ),
+        title: const Text('Exit App'),
+        content: const Text('Are you sure you want to exit the app?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text(
-              'No',
-              style: TextStyle(color: Colors.redAccent, fontSize: 16),
-            ),
+            child: const Text('No'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text(
-              'yes',
-              style: TextStyle(color: Colors.green, fontSize: 16),
-            ),
+            child: const Text('Yes'),
           ),
         ],
       ),
     );
-    return shouldLogout ?? false;
+    return shouldPop ?? false;
   }
 
   Future<void> _signOut() async {
-    final shouldLogout = await _showLogoutConfirmation();
-    if (shouldLogout) {
-      try {
-        final authService = Provider.of<AuthService>(context, listen: false);
-        await authService.signOut();
-        // Navigation is handled by AuthWrapper
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Error logging out')));
-        }
-      }
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to log out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('yes'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout != true) return;
+
+    try {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      await authService.signOut();
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => RoleSelectionScreen()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error logging out. Please try again!.')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        // Show a dialog to confirm exit
-        final shouldPop = await showDialog<bool>(
-          barrierDismissible:  false,
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text(
-              'Exit App',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            content: const Text(
-              'Are you sure you want to exit the app?',
-              style: TextStyle(color: Colors.black, fontSize: 16),
-            ),
-            actions: [
-              TextButton(
-
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text(
-                  'No',
-                  style: TextStyle(color: Colors.redAccent, fontSize: 16),
-                ),
-              ),
-              TextButton(
-
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text(
-                  'Yes',
-                  style: TextStyle(color: Colors.green, fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-        );
-        return shouldPop ?? false;
-      },
+      onWillPop: () => _onWillPop(context),
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
             'Admin Dashboard',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
+          backgroundColor: AppTheme.primaryColor,
+          elevation: 0,
           actions: [
             IconButton(
-              icon: const Icon(Icons.logout),
+              icon: const Icon(Icons.logout, color: Colors.white),
               onPressed: _signOut,
               tooltip: 'Logout',
             ),
           ],
-          elevation: 0,
         ),
         body: _buildBody(),
       ),

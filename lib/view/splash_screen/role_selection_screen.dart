@@ -1,105 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/theme/theme.dart';
-import 'package:quiz_app/view/auth/auth_screen.dart';
+import 'package:quiz_app/view/auth/login_screen.dart';
+import 'package:quiz_app/view/auth/signup_screen.dart';
 
-class RoleSelectionScreen extends StatelessWidget {
+class RoleSelectionScreen extends StatefulWidget {
   const RoleSelectionScreen({super.key});
 
+  @override
+  State<RoleSelectionScreen> createState() => _RoleSelectionScreenState();
+}
+
+class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Smart Quiz',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.primaryColor,
-              ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Smart Quiz',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                const Text(
+                  'Welcome to our App',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 30),
+                _buildRoleButton(
+                  title: 'Tap to login',
+                  icon: Icons.login,
+                  onPressed: () => _navigateToAuth(context, isLogin: true),
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
-            const SizedBox(height: 70),
-            const Text(
-              'Please Select Your Role',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,),
-            ),
-            const SizedBox(height: 50),
-            _buildRoleButton(
-              context,
-              'Admin',
-              Icons.admin_panel_settings,
-              'Access admin dashboard and manage quizzes',
-            ),
-            const SizedBox(height: 20),
-            _buildRoleButton(
-              context,
-              'User',
-              Icons.person,
-              'Take quizzes and track your progress',
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildRoleButton(
-    BuildContext context,
-    String role,
-    IconData icon,
-    String description,
-  ) {
+  Widget _buildRoleButton({
+    required String title,
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
     return SizedBox(
-      width: 300,
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AuthScreen(),
-            ),
-          );
-        },
+      width: double.infinity,
+      height: 70,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: 28),
+        label: Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          backgroundColor: Colors.white,
           elevation: 5,
-          shadowColor: Colors.grey.withOpacity(0.5),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 40,
-              color: AppTheme.primaryColor,
-            ),
-            const SizedBox(height: 15),
-            Text(
-              role,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.primaryColor,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              description,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
+      ),
+    );
+  }
+
+  void _navigateToAuth(BuildContext context, {required bool isLogin}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => isLogin
+            ? const LoginScreen(role: '',)
+            : const SignupScreen(role: '',),
       ),
     );
   }

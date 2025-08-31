@@ -6,6 +6,7 @@ import 'package:quiz_app/services/auth_service.dart';
 import 'package:quiz_app/theme/theme.dart';
 
 import '../../model/category.dart';
+import '../splash_screen/role_selection_screen.dart';
 import 'category_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -82,19 +83,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _signOut() async {
-    final shouldLogout = await _showLogoutConfirmation();
-    if (shouldLogout) {
-      try {
-        final authService = Provider.of<AuthService>(context, listen: false);
-        await authService.signOut();
-        // Navigation is handled by AuthWrapper
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Error occurred while signing out')),
-          );
-        }
-      }
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to log out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('yes'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout != true) return;
+
+    try {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      await authService.signOut();
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => RoleSelectionScreen()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error logging out. Please try again.')),
+      );
     }
   }
 
@@ -107,179 +129,92 @@ class _HomeScreenState extends State<HomeScreen> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 230,
-            pinned: true,
-            floating: true,
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.logout),
-                onPressed: _signOut,
-                tooltip: 'Logout',
-              ),
-            ],
-            centerTitle: false,
-            backgroundColor: AppTheme.primaryColor,
-            elevation: 0,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
+        backgroundColor: AppTheme.backgroundColor,
+        appBar: AppBar(
+          title: const Text('Smart Quiz'),
+          backgroundColor: AppTheme.primaryColor,
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout, color: Colors.white),
+              onPressed: _signOut,
+              tooltip: 'Logout',
             ),
-            title: const Text(
-              'Smart Quiz',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              background: SafeArea(
-                child: Column(
-                  children: [
-                    const SizedBox(height: kToolbarHeight + 24),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Welcome, Learner!',
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+          ],
+        ),
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.all(16),
+                height: 40,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _categoryFilters.length,
+                  itemBuilder: (context, index) {
+                    final filter = _categoryFilters[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text(
+                          filter,
+                          style: TextStyle(
+                            color: _selectedFilter == filter
+                                ? Colors.white
+                                : AppTheme.primaryColor,
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "let's test your knowledge today!",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white.withOpacity(0.8),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: TextField(
-                              controller: _searchController,
-                              onChanged: (value) => _filterCategories(value),
-                              decoration: InputDecoration(
-                                hintText: 'Search categories...',
-                                prefixIcon: const Icon(
-                                  Icons.search,
-                                  color: AppTheme.primaryColor,
-                                ),
-                                suffixIcon: _searchController.text.isNotEmpty
-                                    ? IconButton(
-                                        onPressed: () {
-                                          _searchController.clear();
-                                          _filterCategories('');
-                                        },
-                                        icon: const Icon(Icons.clear),
-                                        color: AppTheme.primaryColor,
-                                      )
-                                    : null,
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
+                        selected: _selectedFilter == filter,
+                        selectedColor: AppTheme.primaryColor,
+                        backgroundColor: Colors.white,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            _selectedFilter = filter;
+                            _filterCategories(
+                              _searchController.text,
+                              categoryFilter: filter,
+                            );
+                          });
+                        },
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
-              collapseMode: CollapseMode.pin,
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.all(16),
-              height: 40,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _categoryFilters.length,
-                itemBuilder: (context, index) {
-                  final filter = _categoryFilters[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ChoiceChip(
-                      label: Text(
-                        filter,
-                        style: TextStyle(
-                          color: _selectedFilter == filter
-                              ? Colors.white
-                              : AppTheme.primaryColor,
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: _filteredCategories.isEmpty
+                  ? const SliverToBoxAdapter(
+                      child: Center(
+                        child: Text(
+                          'No categories found',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textSecondaryColor,
+                          ),
                         ),
                       ),
-                      selected: _selectedFilter == filter,
-                      selectedColor: AppTheme.primaryColor,
-                      backgroundColor: Colors.white,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          _selectedFilter = filter;
-                          _filterCategories(
-                            _searchController.text,
-                            categoryFilter: filter,
-                          );
-                        });
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-            sliver: _filteredCategories.isEmpty
-                ? const SliverToBoxAdapter(
-                    child: Center(
-                      child: Text(
-                        'No categories found',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.textSecondaryColor,
-                        ),
+                    )
+                  : SliverGrid(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 0.8,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) =>
+                            _buildCategoryCard(_filteredCategories[index], index),
+                        childCount: _filteredCategories.length,
                       ),
                     ),
-                  )
-                : SliverGrid(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 0.8,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) =>
-                          _buildCategoryCard(_filteredCategories[index], index),
-                      childCount: _filteredCategories.length,
-                    ),
-                  ),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
-    ),);
+    );
   }
 
   Widget _buildCategoryCard(Category category, int index) {

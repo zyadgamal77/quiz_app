@@ -7,7 +7,7 @@ import 'package:quiz_app/theme/theme.dart';
 import 'package:quiz_app/view/splash_screen/splash_screen.dart';
 import 'firebase_options.dart';
 import 'view/admin/admin_home_screen.dart';
-import 'view/auth/auth_screen.dart';
+import 'view/auth/login_screen.dart';
 import 'view/user/home_screen.dart';
 
 void main() async {
@@ -68,11 +68,11 @@ class AuthWrapper extends StatelessWidget {
                     ? const AdminHomeScreen()
                     : const HomeScreen();
               }
-              return const AuthScreen();
+              return const LoginScreen(role: 'user');
             },
           );
         }
-        return const AuthScreen();
+        return const LoginScreen(role: 'user');
       },
     );
   }
