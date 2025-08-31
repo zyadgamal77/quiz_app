@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_app/services/auth_service.dart';
 import 'package:quiz_app/theme/theme.dart';
-import 'package:quiz_app/view/splash_screen/role_selection_screen.dart';
 import 'package:quiz_app/view/splash_screen/splash_screen.dart';
 import 'firebase_options.dart';
 import 'view/admin/admin_home_screen.dart';
+import 'view/auth/auth_screen.dart';
 import 'view/user/home_screen.dart';
 
 void main() async {
@@ -50,55 +50,29 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
-
     return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+      stream: authService.authStateChanges,
       builder: (context, snapshot) {
-        debugPrint('Auth state changed. Has data: ${snapshot.hasData}');
-        
         if (snapshot.connectionState == ConnectionState.waiting) {
-          debugPrint('Waiting for auth state...');
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
-
-        // If user is logged in, check their role and navigate accordingly
         if (snapshot.hasData) {
-          debugPrint('User is logged in. UID: ${snapshot.data?.uid}');
-          
           return FutureBuilder<String?>(
-            future: authService.getUserRole(),
+            future: authService.getUserRole(snapshot.data!.uid),
             builder: (context, roleSnapshot) {
-              debugPrint('Role snapshot state: ${roleSnapshot.connectionState}');
-              
               if (roleSnapshot.connectionState == ConnectionState.waiting) {
-                debugPrint('Waiting for user role...');
-                return const Scaffold(
-                  body: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
-
-              final role = roleSnapshot.data;
-              debugPrint('User role determined: $role');
-              
-              if (role == 'admin') {
-                debugPrint('Navigating to AdminHomeScreen');
-                return const AdminHomeScreen();
-              } else {
-                debugPrint('Navigating to HomeScreen');
-                return const HomeScreen();
+              if (roleSnapshot.hasData) {
+                return roleSnapshot.data == 'admin'
+                    ? const AdminHomeScreen()
+                    : const HomeScreen();
               }
+              return const AuthScreen();
             },
           );
         }
-
-        // If user is not logged in, show the role selection screen
-        return const RoleSelectionScreen();
+        return const AuthScreen();
       },
     );
   }

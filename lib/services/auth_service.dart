@@ -10,6 +10,9 @@ class AuthService {
 
   // Get current user
   User? get currentUser => _auth.currentUser;
+  
+  // Get auth state changes stream
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   // Sign up with email and password
   Future<UserCredential> signUpWithEmailAndPassword(
@@ -126,10 +129,30 @@ class AuthService {
   }
 
   // Get current user role
-  Future<String?> getUserRole() async {
+  // If [userId] is provided, fetches role from Firestore
+  // If not provided, gets role from local storage
+  Future<String?> getUserRole([String? userId]) async {
+    if (userId != null) {
+      try {
+        final userDoc = await _firestore.collection('users').doc(userId).get();
+        if (userDoc.exists) {
+          final role = userDoc['role'] as String?;
+          debugPrint('Retrieved user role from Firestore: $role');
+          // Update local storage for future use
+          if (role != null) {
+            await _saveUserRole(role);
+          }
+          return role;
+        }
+      } catch (e) {
+        debugPrint('Error getting user role from Firestore: $e');
+      }
+    }
+    
+    // Fall back to local storage
     final prefs = await SharedPreferences.getInstance();
     final role = prefs.getString('userRole');
-    debugPrint('Retrieved user role: $role');
+    debugPrint('Retrieved user role from local storage: $role');
     return role;
   }
 

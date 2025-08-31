@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/auth_service.dart';
@@ -67,12 +66,18 @@ class _LoginScreenState extends State<LoginScreen> {
           context,
           MaterialPageRoute(builder: (context) => const AdminHomeScreen()),
         );
-      } else {
+      } else if (userRole != null) {
         debugPrint('Navigating to HomeScreen');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
+      } else {
+        debugPrint('No role found, showing error');
+        setState(() {
+          _errorMessage = 'User role not found. Please contact support.';
+          _isLoading = false;
+        });
       }
     } catch (e) {
       debugPrint('Login error: $e');

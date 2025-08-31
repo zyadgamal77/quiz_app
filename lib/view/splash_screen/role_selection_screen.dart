@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/theme/theme.dart';
-import 'package:quiz_app/view/auth/login_screen.dart';
+import 'package:quiz_app/view/auth/auth_screen.dart';
 
 class RoleSelectionScreen extends StatelessWidget {
   const RoleSelectionScreen({super.key});
@@ -52,53 +52,52 @@ class RoleSelectionScreen extends StatelessWidget {
     IconData icon,
     String description,
   ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+    return SizedBox(
+      width: 300,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primaryColor,
-          padding: const EdgeInsets.all(20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          elevation: 5,
-        ),
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => LoginScreen(role: role.toLowerCase()),
+              builder: (context) => const AuthScreen(),
             ),
           );
         },
-        child: Row(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 5,
+          shadowColor: Colors.grey.withOpacity(0.5),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 30, color: Colors.white),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    role,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    description,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ],
+            Icon(
+              icon,
+              size: 40,
+              color: AppTheme.primaryColor,
+            ),
+            const SizedBox(height: 15),
+            Text(
+              role,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.primaryColor,
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.white),
+            const SizedBox(height: 8),
+            Text(
+              description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
           ],
         ),
       ),
