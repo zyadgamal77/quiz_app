@@ -4,7 +4,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quiz_app/model/quiz.dart';
 import 'package:quiz_app/theme/theme.dart';
 import 'package:quiz_app/view/user/quiz_play_screen.dart';
-
 import '../../model/category.dart';
 import '../../model/question.dart';
 
@@ -36,7 +35,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           .collection('quizzes')
           .where('categoryId', isEqualTo: widget.category.id)
           .get();
-      
+
       setState(() {
         _quizzes = snapshot.docs.map((doc) {
           final data = doc.data();
@@ -45,7 +44,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
             title: data['title'] ?? 'Untitled Quiz',
             categoryId: data['categoryId'] ?? '',
             timeLimit: (data['timeLimit'] ?? 10) as int,
-            questions: (data['questions'] as List<dynamic>?)?.map((q) => Question.fromMap(Map<String, dynamic>.from(q))).toList() ?? [],
+            questions:
+                (data['questions'] as List<dynamic>?)
+                    ?.map((q) => Question.fromMap(Map<String, dynamic>.from(q)))
+                    .toList() ??
+                [],
             createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
             updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
           );
@@ -94,7 +97,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text(' go Back',style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.textPrimaryColor ),),
+                    child: const Text(
+                      ' go Back',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimaryColor,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -120,7 +129,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       child: Text(
                         widget.category.description,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 12, color: Colors.white),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     background: Center(
@@ -176,9 +188,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
             onTap: () {
-              Navigator.push(context,
-                MaterialPageRoute(builder: (context)
-              => QuizPlayScreen(quiz: quiz),),);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QuizPlayScreen(quiz: quiz),
+                ),
+              );
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -215,7 +230,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                const Icon(Icons.question_answer_outlined, size: 16),
+                                const Icon(
+                                  Icons.question_answer_outlined,
+                                  size: 16,
+                                ),
                                 const SizedBox(width: 4),
                                 Text('${quiz.questions.length} Questions'),
                                 const SizedBox(width: 16),
