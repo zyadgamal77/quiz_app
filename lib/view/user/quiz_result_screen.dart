@@ -312,6 +312,9 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
                     final isCorrect =
                         selectedAnswer != null &&
                         selectedAnswer == question.correctOptionIndex;
+                    final notCorrect = selectedAnswer != isCorrect;
+
+
                     return Container(
                       margin: EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(
@@ -393,13 +396,15 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
                                     isCorrect ? Colors.green : Colors.redAccent,
                                     "Your Answer:",
                                   ),
+                                  if (!isCorrect) ...[
+                                    SizedBox(height: 20),
+                                    _buildAnswerRow(
+                                      question.options[question.correctOptionIndex],
+                                      Colors.green,
+                                      "Correct Answer:",
+                                    ),
+                                  ],
                                   SizedBox(height: 20),
-                                  _buildAnswerRow(
-                                    question.options[question
-                                        .correctOptionIndex],
-                                    isCorrect ? Colors.green : Colors.redAccent,
-                                    "Correct Answer:",
-                                  ),
                                 ],
                               ),
                             ),
