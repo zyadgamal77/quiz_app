@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/auth_service.dart';
 import 'package:quiz_app/theme/theme.dart';
@@ -8,9 +7,7 @@ import 'package:quiz_app/view/admin/admin_home_screen.dart';
 import 'package:quiz_app/view/user/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  final String role;
-  
-  const LoginScreen({super.key, required this.role});
+  const LoginScreen({super.key, required String role});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -110,14 +107,47 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.role.toUpperCase()} Login'),
+        title: const Text('Login'),
         leading: IconButton(
-          icon: const Icon(Icons.logout),
-          onPressed: () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
-          ),
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () async {
+            try {
+              await _authService.signOut();
+              if (!mounted) return;
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
+                (route) => false,
+              );
+            } catch (e) {
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Failed to sign out. Please try again.')),
+              );
+            }
+          },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.red), 
+            onPressed: () async {
+              try {
+                await _authService.signOut();
+                if (!mounted) return;
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
+                  (route) => false, 
+                );
+              } catch (e) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Failed to sign out. Please try again.')),
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -139,14 +169,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 40),
                 const Text(
-                  'Welcome to Quiz App',
+                  'Welcome!',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  'Sign in to continue as ${widget.role}',
-                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                const Text(
+                  'Sign in to continue with your account',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),
@@ -222,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SignupScreen(role: widget.role),
+                        builder: (context) => const SignupScreen(role: '',),
                       ),
                     );
                   },
