@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/model/quiz.dart';
 import 'package:quiz_app/view/admin/edit_quiz_screen.dart';
@@ -35,7 +36,11 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
 
   Future<void> _fetchCategories() async {
     try {
-      final querySnapshot = await _firestore.collection('categories').get();
+      final String uid = FirebaseAuth.instance.currentUser!.uid;
+      final querySnapshot = await _firestore
+          .collection('categories')
+          .where('ownerId', isEqualTo: uid)
+          .get();
       final loadedCategories = querySnapshot.docs
           .map((doc) => Category.fromMap(doc.id, doc.data()))
           .toList();
@@ -44,7 +49,7 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
         if (widget.categoryId != null) {
           _initialCategory = _categories.firstWhere(
             (category) => category.id == widget.categoryId,
-            orElse: () => Category(id: '', name: 'Unknown', description: ''),
+            orElse: () => Category(id: '', name: 'Unknown', description: '', ownerId: ''),
           );
           _selectedCategoryId = _initialCategory!.id;
           selectedCategoryId = _selectedCategoryId;
@@ -56,16 +61,15 @@ class _ManageQuizzesScreenState extends State<ManageQuizzesScreen> {
   }
 
   Stream<QuerySnapshot> _getQuizStream() {
-    Query query = _firestore.collection('quizzes');
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    Query query = _firestore.collection('quizzes').where('ownerId', isEqualTo: uid);
     final String? filterCategoryId = _selectedCategoryId ?? widget.categoryId;
 
     if (filterCategoryId != null) {
       query = query.where('categoryId', isEqualTo: filterCategoryId);
     }
 
-    if (_searchQuery.isNotEmpty) {
-      query = query.where('name', isGreaterThanOrEqualTo: _searchQuery);
-    }
+    // Text search is handled client-side below on the loaded list using the title field.
 
     return query.snapshots();
   }

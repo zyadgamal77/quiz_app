@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -47,11 +48,15 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
       _isLoading = true;
     });
     try {
+      final String uid = FirebaseAuth.instance.currentUser!.uid;
       if (widget.category != null) {
         // Update existing category
         final updatedCategory = widget.category!.copyWith(
           description: _descriptionController.text.trim(),
           name: _nameController.text.trim(),
+          ownerId: widget.category!.ownerId.isNotEmpty
+              ? widget.category!.ownerId
+              : uid,
         );
         await _firestore
             .collection('categories')
@@ -70,6 +75,7 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
           name: _nameController.text.trim(),
           description: _descriptionController.text.trim(),
           createdAt: DateTime.now(),
+          ownerId: uid,
         );
 
         await docRef.set(newCategory.toMap());

@@ -4,12 +4,14 @@ class Category {
   final String name;
   final String description;
   final DateTime? createdAt;
+  final String ownerId;
 
   Category({
     required this.id,
     required this.name,
     required this.description,
     this.createdAt,
+    required this.ownerId,
   });
 
   factory Category.fromMap(String id, Map<String, dynamic> map) {
@@ -18,6 +20,7 @@ class Category {
         name: map['name'] ?? '',
         description: map['description'] ?? '',
         createdAt: map['createdAt']?.toDate(),
+        ownerId: map['ownerId'] ?? '',
     );
   }
   Map<String, dynamic> toMap() {
@@ -26,6 +29,7 @@ class Category {
       'name': name,
       'description': description,
       'createdAt': createdAt ?? DateTime.now(),
+      'ownerId': ownerId,
     };
   }
 
@@ -33,6 +37,7 @@ class Category {
     String? id,
     String? name,
     String? description,
+    String? ownerId,
   })
   {
   return Category(
@@ -40,6 +45,7 @@ class Category {
     name: name ?? this.name,
     description: description ?? this.description,
     createdAt: createdAt,
+    ownerId: ownerId ?? this.ownerId,
   );
   }
 }

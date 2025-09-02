@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_app/services/auth_service.dart';
@@ -21,9 +22,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   Future<Map<String, dynamic>> _fetchStatistics() async {
     try {
+      final String uid = FirebaseAuth.instance.currentUser!.uid;
       // Get categories count
       final categoriesCount = await _firestore
           .collection('categories')
+          .where('ownerId', isEqualTo: uid)
           .count()
           .get()
           .catchError(
@@ -33,6 +36,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       // Get quizzes count
       final quizzesCount = await _firestore
           .collection('quizzes')
+          .where('ownerId', isEqualTo: uid)
           .count()
           .get()
           .catchError(
@@ -42,6 +46,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       // Get latest quizzes
       final latestQuizzes = await _firestore
           .collection('quizzes')
+          .where('ownerId', isEqualTo: uid)
           .orderBy('createdAt', descending: true)
           .limit(5)
           .get()
@@ -52,6 +57,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       // Get categories
       final categories = await _firestore
           .collection('categories')
+          .where('ownerId', isEqualTo: uid)
           .get()
           .catchError((error) => throw Exception('Failed to load categories'));
 
@@ -61,6 +67,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             final quizCount = await _firestore
                 .collection('quizzes')
                 .where('categoryId', isEqualTo: category.id)
+                .where('ownerId', isEqualTo: uid)
                 .count()
                 .get();
 

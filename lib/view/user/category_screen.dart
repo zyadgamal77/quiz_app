@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quiz_app/model/quiz.dart';
@@ -31,9 +32,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
       setState(() {
         _isLoading = true;
       });
+      final String uid = FirebaseAuth.instance.currentUser!.uid;
       final snapshot = await FirebaseFirestore.instance
           .collection('quizzes')
           .where('categoryId', isEqualTo: widget.category.id)
+          .where('ownerId', isEqualTo: uid)
           .get();
 
       setState(() {
@@ -51,6 +54,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 [],
             createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
             updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
+            ownerId: data['ownerId'] ?? '',
           );
         }).toList();
         _isLoading = false;

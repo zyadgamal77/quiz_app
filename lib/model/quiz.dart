@@ -8,6 +8,7 @@ class Quiz {
   final List<Question> questions;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String ownerId;
 
   Quiz({
     required this.id,
@@ -17,6 +18,7 @@ class Quiz {
     required this.questions,
     this.createdAt,
     this.updatedAt,
+    required this.ownerId,
   });
 
   factory Quiz.fromMap(Map<String, dynamic> map) {
@@ -30,6 +32,7 @@ class Quiz {
           .toList(),
       createdAt: map['createdAt']?.toDate(),
       updatedAt: map['updatedAt']?.toDate(),
+      ownerId: map['ownerId'] ?? '',
     );
   }
 
@@ -42,6 +45,7 @@ class Quiz {
       'updatedAt': DateTime.now(),
       if(!isUpdate) 'updateAt' : DateTime.now(),
       'createdAt' :createdAt,
+      'ownerId': ownerId,
     };
   }
 
@@ -51,6 +55,7 @@ class Quiz {
     int? timeLimit,
     List<Question>? questions,
     DateTime? createdAt,
+    String? ownerId,
   }) {
     return Quiz(
       id: id,
@@ -59,6 +64,8 @@ class Quiz {
       timeLimit: timeLimit ?? this.timeLimit,
       questions: questions ?? this.questions,
       createdAt: createdAt,
+      updatedAt: updatedAt,
+      ownerId: ownerId ?? this.ownerId,
     );
   }
 }

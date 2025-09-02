@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/model/category.dart';
 import '../../theme/theme.dart';
@@ -17,6 +18,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -43,7 +45,11 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('categories').orderBy('name').snapshots(),
+        stream: _firestore
+            .collection('categories')
+            .where('ownerId', isEqualTo: uid)
+            .orderBy('name')
+            .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return const Center(child: Text('An error occurred'));

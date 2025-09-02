@@ -1,5 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/model/category.dart';
 import 'package:quiz_app/model/question.dart';
@@ -60,8 +61,10 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
       _isLoadingCategories = true;
     });
     try {
+      final String uid = FirebaseAuth.instance.currentUser!.uid;
       final snapshot = await _firestore
           .collection('categories')
+          .where('ownerId', isEqualTo: uid)
           .orderBy('name')
           .get();
       setState(() {
@@ -142,6 +145,8 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
         _isLoading = true;
       });
 
+      final String uid = FirebaseAuth.instance.currentUser!.uid;
+
       // Validate all questions and options
       for (var i = 0; i < _questionFormItems.length; i++) {
         final item = _questionFormItems[i];
@@ -181,6 +186,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
         'questions': questions.map((q) => q.toMap()).toList(),
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
+        'ownerId': uid,
       };
 
       debugPrint('Saving quiz data: $quizData');

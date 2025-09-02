@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -30,8 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchCategories() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
     final snapshot = await FirebaseFirestore.instance
         .collection('categories')
+        .where('ownerId', isEqualTo: uid)
         .orderBy('createdAt', descending: true)
         .get();
     setState(() {
