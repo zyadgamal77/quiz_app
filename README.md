@@ -1,98 +1,116 @@
-# Smart Quiz App
+# 🎯 Smart Quiz App
 
-A Flutter-based quiz application that allows users to test their knowledge across various categories. The app features a clean, user-friendly interface with role-based access control for both learners and administrators.
+📱 A Flutter-based quiz application that allows users to test their knowledge across various categories. The app features a clean, user-friendly interface with role-based access control for both learners and administrators.
 
-## Features
+## ✨ Features
 
-- **User Authentication**: Secure login and signup with email/password
-- **Role-Based Access**: Separate interfaces for learners and administrators
-- **Category Browsing**: Browse quizzes by different categories
-- **Search Functionality**: Easily find specific quiz categories
-- **Responsive Design**: Works on multiple screen sizes and orientations
-- **Modern UI**: Clean and intuitive user interface with smooth animations
+<div align="center">
 
-## Screenshots
+| Feature | Description |
+|---------|-------------|
+| 🔐 **User Authentication** | Secure login and signup with email/password |
+| 👥 **Role-Based Access** | Separate interfaces for learners and administrators |
+| 📚 **Category Browsing** | Browse quizzes by different categories |
+| 🔍 **Smart Search** | Easily find specific quiz categories |
+| 📱 **Responsive Design** | Works on all devices and screen sizes |
+| 🎨 **Modern UI** | Beautiful interface with smooth animations |
 
-*(Screenshots will be added here)*
+</div>
 
-## Getting Started
+## 🖼️ Screenshots
 
-### Prerequisites
+| Login Screen | Home Screen | Category View |
+|--------------|-------------|----------------|
+| ![Login](assets/images/login_screen.png) | ![Home](assets/images/home_screen.png) | ![Category](assets/images/category_screen.png) |
+
+## 🚀 Getting Started
+
+### 📋 Prerequisites
 
 - Flutter SDK (latest stable version)
 - Dart SDK (latest stable version)
 - Firebase account (for authentication and database)
 - Android Studio / Xcode (for building the app)
 
-### Installation
+### ⚙️ Installation
 
-1. Clone the repository:
+1. **Clone the repository**
    ```bash
    git clone https://github.com/yourusername/quiz_app.git
    cd quiz_app
    ```
 
-2. Install dependencies:
+2. **Install dependencies**
    ```bash
    flutter pub get
    ```
 
-3. Configure Firebase:
-   - Create a new Firebase project at [Firebase Console](https://console.firebase.google.com/)
-   - Add Android/iOS apps to your Firebase project
-   - Download and add the configuration files:
-     - Android: `google-services.json` to `android/app/`
-     - iOS: `GoogleService-Info.plist` to `ios/Runner/`
+3. **Firebase Setup**
+   - Create a new project at [Firebase Console](https://console.firebase.google.com/)
+   - Add your Android/iOS apps
+   - Download config files:
+     - Android: `google-services.json` → `android/app/`
+     - iOS: `GoogleService-Info.plist` → `ios/Runner/`
 
-4. Run the app:
+4. **Run the app**
    ```bash
    flutter run
    ```
 
-## Project Structure
+## 🏗️ Project Structure
 
 ```
 lib/
-├── main.dart                # Application entry point
-├── model/                  # Data models
-│   └── category.dart       # Category model
-│   └── question.dart       # Question model
-│   └── quiz.dart           # Quiz model
-├── services/               # Business logic
-│   └── auth_service.dart   # Authentication service
-├── theme/                  # App theming
-│   └── theme.dart          # Theme configuration
-├── utils/                  # Utility classes
-│   └── auth_utils.dart     # Authentication utilities
-└── view/                   # UI components
-    ├── auth/               # Authentication screens
-    │   ├── login_screen.dart
-    │   └── signup_screen.dart
-    ├── user/               # User-facing screens
-    │   ├── home_screen.dart
-    │   └── category_screen.dart
-    └── admin/              # Admin screens
-        └── admin_home_screen.dart
+├── 📄 main.dart                # App entry point
+├── 📁 model/                  # Data models
+│   ├── 📄 category.dart       # Category model
+│   ├── 📄 question.dart       # Question model
+│   └── 📄 quiz.dart           # Quiz model
+├── 📁 services/               # Business logic
+│   └── 📄 auth_service.dart   # Authentication
+├── 📁 theme/                  # Theming
+│   └── 📄 theme.dart          # Theme config
+└── 📁 view/                   # UI components
+    ├── 📁 auth/               # Auth screens
+    │   ├── 📄 login_screen.dart
+    │   └── 📄 signup_screen.dart
+    └── 📁 user/               # User screens
+        ├── 📄 home_screen.dart
+        └── 📄 category_screen.dart
 ```
 
-## Dependencies
+## 📦 Dependencies
 
-- `firebase_core`: ^2.15.1
-- `firebase_auth`: ^4.9.0
-- `cloud_firestore`: ^4.9.1
-- `provider`: ^6.0.5
-- `flutter_animate`: ^4.2.0
+| Package | Version | Usage |
+|---------|---------|-------|
+| `firebase_core` | ^2.15.1 | Firebase Core |
+| `firebase_auth` | ^4.9.0 | Authentication |
+| `cloud_firestore` | ^4.9.1 | Database |
+| `provider` | ^6.0.5 | State Management |
+| `flutter_animate` | ^4.2.0 | Animations |
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## License
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📄 License
 
-## Acknowledgments
+Distributed under the MIT License. See `LICENSE` for more information.
 
-- Flutter team for the amazing framework
+## 🙏 Acknowledgments
+
+- Flutter Team for the amazing framework
 - Firebase for the backend services
-- All open-source contributors whose packages are used in this project
+- All open-source contributors
+
+---
+
+<div align="center">
+  Made with ❤️ by Your Name
+</div>
