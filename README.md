@@ -21,7 +21,7 @@
 
 | Login Screen | Home Screen | Category View |
 |--------------|-------------|----------------|
-| ![Login](assets/images/login_screen.png) | ![Home](assets/images/home_screen.png) | ![Category](assets/images/category_screen.png) |
+| ![Login](assets/images/Screenshot_20250902_062225.png) | ![Home](assets/images/Screenshot_20250902_062511.png) | ![Category](assets/images/Screenshot_20250902_062552.png) |
 
 ## 🚀 Getting Started
 
