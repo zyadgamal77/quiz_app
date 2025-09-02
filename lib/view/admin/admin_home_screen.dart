@@ -43,16 +43,24 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             (error) => throw Exception('Failed to load quizzes count'),
           );
 
-      // Get latest quizzes
-      final latestQuizzes = await _firestore
+      // Get latest quizzes (avoid potential composite index by sorting client-side)
+      final allOwnedQuizzesSnapshot = await _firestore
           .collection('quizzes')
           .where('ownerId', isEqualTo: uid)
-          .orderBy('createdAt', descending: true)
-          .limit(5)
           .get()
           .catchError(
             (error) => throw Exception('Failed to load latest quizzes'),
           );
+      final latestQuizzesDocs = allOwnedQuizzesSnapshot.docs
+          .toList()
+          ..sort((a, b) {
+            final aTs = (a.data()['createdAt']);
+            final bTs = (b.data()['createdAt']);
+            final aMillis = aTs == null ? 0 : aTs.millisecondsSinceEpoch as int;
+            final bMillis = bTs == null ? 0 : bTs.millisecondsSinceEpoch as int;
+            return bMillis.compareTo(aMillis);
+          });
+      final latestQuizzes = latestQuizzesDocs.take(5).toList();
 
       // Get categories
       final categories = await _firestore
@@ -87,7 +95,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       return {
         'totalCategories': categoriesCount.count,
         'totalQuizzes': quizzesCount.count,
-        'latestQuizzes': latestQuizzes.docs,
+        'latestQuizzes': latestQuizzes,
         'categoryData': categoryData,
       };
     } catch (e) {
