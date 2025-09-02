@@ -1,13 +1,6 @@
 # 🎯 Smart Quiz App
 
-![Flutter](https://img.shields.io/badge/Flutter-3.x-blue)
-![Firebase](https://img.shields.io/badge/Firebase-Enabled-orange)
-![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
-
-📱 A Flutter-based quiz application that allows users to test their knowledge across various categories.  
-The app features a clean, user-friendly interface with **role-based access control** for both learners and administrators.
-
----
+📱 A Flutter-based quiz application that allows users to test their knowledge across various categories. The app features a clean, user-friendly interface with role-based access control for both learners and administrators.
 
 ## ✨ Features
 
@@ -24,30 +17,16 @@ The app features a clean, user-friendly interface with **role-based access contr
 
 </div>
 
----
-
 ## 🖼️ Screenshots
 
 | Login Screen | Home Screen | Category View |
 |--------------|-------------|----------------|
-| ![Login](assets/images/Screenshot_20250902_062225.png) | ![Home](assets/images/Screenshot_20250902_062511.png) | ![Category](assets/images/Screenshot_20250902_062552.png) |
-
-👉 *Optional: Add a short demo GIF here for a live preview of the app in action.*
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend:** Flutter (Dart)
-- **Backend:** Firebase (Auth, Firestore)
-- **State Management:** Provider
-- **Animations:** flutter_animate
-
----
+| ![Login](assets/images/login.png) | ![Home](assets/images/homee.png) | ![Category](assets/images/category.png) |
 
 ## 🚀 Getting Started
 
 ### 📋 Prerequisites
+
 - Flutter SDK (latest stable version)
 - Dart SDK (latest stable version)
 - Firebase account (for authentication and database)
@@ -59,3 +38,79 @@ The app features a clean, user-friendly interface with **role-based access contr
    ```bash
    git clone https://github.com/yourusername/quiz_app.git
    cd quiz_app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   flutter pub get
+   ```
+
+3. **Firebase Setup**
+   - Create a new project at [Firebase Console](https://console.firebase.google.com/)
+   - Add your Android/iOS apps
+   - Download config files:
+     - Android: `google-services.json` → `android/app/`
+     - iOS: `GoogleService-Info.plist` → `ios/Runner/`
+
+4. **Run the app**
+   ```bash
+   flutter run
+   ```
+
+## 🏗️ Project Structure
+
+```
+lib/
+├── 📄 main.dart                # App entry point
+├── 📁 model/                  # Data models
+│   ├── 📄 category.dart       # Category model
+│   ├── 📄 question.dart       # Question model
+│   └── 📄 quiz.dart           # Quiz model
+├── 📁 services/               # Business logic
+│   └── 📄 auth_service.dart   # Authentication
+├── 📁 theme/                  # Theming
+│   └── 📄 theme.dart          # Theme config
+└── 📁 view/                   # UI components
+    ├── 📁 auth/               # Auth screens
+    │   ├── 📄 login_screen.dart
+    │   └── 📄 signup_screen.dart
+    └── 📁 user/               # User screens
+        ├── 📄 home_screen.dart
+        └── 📄 category_screen.dart
+```
+
+## 📦 Dependencies
+
+| Package | Version | Usage |
+|---------|---------|-------|
+| `firebase_core` | ^2.15.1 | Firebase Core |
+| `firebase_auth` | ^4.9.0 | Authentication |
+| `cloud_firestore` | ^4.9.1 | Database |
+| `provider` | ^6.0.5 | State Management |
+| `flutter_animate` | ^4.2.0 | Animations |
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## 🙏 Acknowledgments
+
+- Flutter Team for the amazing framework
+- Firebase for the backend services
+- All open-source contributors
+
+---
+
+<div align="center">
+  Made with ❤️ by Your Name
+</div>
