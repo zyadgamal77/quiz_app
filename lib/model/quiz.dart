@@ -37,16 +37,20 @@ class Quiz {
   }
 
   Map<String, dynamic> toMap({bool isUpdate = false}) {
-    return {
+    final data = <String, dynamic>{
       'title': title,
       'categoryId': categoryId,
       'timeLimit': timeLimit,
       'questions': questions.map((e) => e.toMap()).toList(),
-      'updatedAt': DateTime.now(),
-      if(!isUpdate) 'updateAt' : DateTime.now(),
-      'createdAt' :createdAt,
       'ownerId': ownerId,
     };
+    if (isUpdate) {
+      data['updatedAt'] = DateTime.now();
+    } else {
+      data['createdAt'] = createdAt ?? DateTime.now();
+      data['updatedAt'] = DateTime.now();
+    }
+    return data;
   }
 
   Quiz copyWith({

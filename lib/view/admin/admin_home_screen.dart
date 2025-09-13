@@ -23,6 +23,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   Future<Map<String, dynamic>> _fetchStatistics() async {
     try {
       final String uid = FirebaseAuth.instance.currentUser!.uid;
+      // Fetch user profile to display name
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+      final String userName = (userDoc.data() ?? const {})['name'] ?? 'Admin';
       // Get categories count
       final categoriesCount = await _firestore
           .collection('categories')
@@ -97,6 +100,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         'totalQuizzes': quizzesCount.count,
         'latestQuizzes': latestQuizzes,
         'categoryData': categoryData,
+        'userName': userName,
       };
     } catch (e) {
       debugPrint('Error in _fetchStatistics: $e');
@@ -216,9 +220,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Welcome Admin',
-                  style: TextStyle(
+                Text(
+                  'Welcome ${stats['userName']}',
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
                     color: AppTheme.textPrimaryColor,

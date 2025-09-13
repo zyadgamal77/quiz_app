@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quiz_app/model/quiz.dart';
@@ -32,11 +31,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
       setState(() {
         _isLoading = true;
       });
-      final String uid = FirebaseAuth.instance.currentUser!.uid;
       final snapshot = await FirebaseFirestore.instance
           .collection('quizzes')
           .where('categoryId', isEqualTo: widget.category.id)
-          .where('ownerId', isEqualTo: uid)
           .get();
 
       setState(() {
@@ -130,13 +127,41 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     centerTitle: true,
                     title: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text(
-                        widget.category.description,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            widget.category.description,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          FutureBuilder<DocumentSnapshot>(
+                            future: FirebaseFirestore.instance.collection('users').doc(widget.category.ownerId).get(),
+                            builder: (context, userSnap) {
+                              if (userSnap.connectionState == ConnectionState.waiting) {
+                                return const SizedBox.shrink();
+                              }
+                              String creatorName = 'Unknown';
+                              if (userSnap.hasData && userSnap.data!.exists) {
+                                final data = userSnap.data!.data() as Map<String, dynamic>;
+                                creatorName = (data['name'] as String?)?.trim().isNotEmpty == true
+                                    ? data['name']
+                                    : (data['email'] as String? ?? 'Unknown');
+                              }
+                              return Text(
+                                'By: $creatorName',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.white70,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
                     background: Center(

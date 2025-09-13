@@ -128,16 +128,17 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
           )
           .toList();
 
-      final updatedQuiz = widget.quiz.copyWith(
-        title: _titleController.text.trim(),
-        timeLimit: int.tryParse(_timeLimitController.text) ?? 1,
-        questions: questions,
-      );
+      final updateData = {
+        'title': _titleController.text.trim(),
+        'timeLimit': int.tryParse(_timeLimitController.text) ?? 1,
+        'questions': questions.map((q) => q.toMap()).toList(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
 
       await _firestore
           .collection('quizzes')
           .doc(widget.quiz.id)
-          .update(updatedQuiz.toMap());
+          .update(updateData);
 
       if (!mounted) return;
 

@@ -50,18 +50,15 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
     try {
       final String uid = FirebaseAuth.instance.currentUser!.uid;
       if (widget.category != null) {
-        // Update existing category
-        final updatedCategory = widget.category!.copyWith(
-          description: _descriptionController.text.trim(),
-          name: _nameController.text.trim(),
-          ownerId: widget.category!.ownerId.isNotEmpty
-              ? widget.category!.ownerId
-              : uid,
-        );
+        // Update existing category (only mutable fields)
         await _firestore
             .collection('categories')
             .doc(widget.category!.id)
-            .update(updatedCategory.toMap());
+            .update({
+          'name': _nameController.text.trim(),
+          'description': _descriptionController.text.trim(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
 
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -70,15 +67,14 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
       } else {
         // Add new category
         final docRef = _firestore.collection('categories').doc();
-        final newCategory = Category(
-          id: docRef.id,
-          name: _nameController.text.trim(),
-          description: _descriptionController.text.trim(),
-          createdAt: DateTime.now(),
-          ownerId: uid,
-        );
 
-        await docRef.set(newCategory.toMap());
+        await docRef.set({
+          'name': _nameController.text.trim(),
+          'description': _descriptionController.text.trim(),
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+          'ownerId': uid,
+        });
 
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -214,8 +210,8 @@ class _AddCategoriesScreensState extends State<AddCategoriesScreens> {
                             )
                           : Text(
                               widget.category == null
-                                  ? 'Update Category'
-                                  : 'Add Category',
+                                  ? 'Add Category'
+                                  : 'Update Category',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

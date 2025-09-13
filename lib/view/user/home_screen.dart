@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -31,10 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchCategories() async {
-    final String uid = FirebaseAuth.instance.currentUser!.uid;
     final snapshot = await FirebaseFirestore.instance
         .collection('categories')
-        .where('ownerId', isEqualTo: uid)
         .orderBy('createdAt', descending: true)
         .get();
     setState(() {
@@ -54,11 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
         final searchQuery = query.toLowerCase();
         final matchesSearch = category.name.toLowerCase().contains(searchQuery) ||
             category.description.toLowerCase().contains(searchQuery);
-            
+
         final matchesCategory = categoryFilter == null ||
             categoryFilter == 'All' ||
             category.name == categoryFilter;
-            
+
         return matchesSearch && matchesCategory;
       }).toList();
     });
@@ -272,6 +269,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  FutureBuilder<DocumentSnapshot>(
+                    future: FirebaseFirestore.instance.collection('users').doc(category.ownerId).get(),
+                    builder: (context, userSnap) {
+                      if (userSnap.connectionState == ConnectionState.waiting) {
+                        return const SizedBox(height: 10);
+                      }
+                      String creatorName = 'Unknown';
+                      if (userSnap.hasData && userSnap.data!.exists) {
+                        final data = userSnap.data!.data() as Map<String, dynamic>;
+                        creatorName = (data['name'] as String?)?.trim().isNotEmpty == true
+                            ? data['name']
+                            : (data['email'] as String? ?? 'Unknown');
+                      }
+                      return Text(
+                        'By: $creatorName',
+                        style: const TextStyle(fontSize: 12, color: AppTheme.textSecondaryColor),
+                        textAlign: TextAlign.center,
+                      );
+                    },
                   ),
                 ],
               ),

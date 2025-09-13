@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +64,6 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
       final snapshot = await _firestore
           .collection('categories')
           .where('ownerId', isEqualTo: uid)
-          .orderBy('name')
           .get();
       setState(() {
         _categories = snapshot.docs
@@ -74,6 +72,7 @@ class _AddQuizScreenState extends State<AddQuizScreen> {
                   Category.fromMap(doc.id, doc.data()),
             )
             .toList();
+        _categories.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
       });
     } catch (e) {
       debugPrint('Error loading categories: $e');

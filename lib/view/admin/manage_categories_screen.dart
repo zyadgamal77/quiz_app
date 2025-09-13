@@ -48,11 +48,10 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
         stream: _firestore
             .collection('categories')
             .where('ownerId', isEqualTo: uid)
-            .orderBy('name')
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('An error occurred'));
+            return Center(child: Text('An error occurred: ${snapshot.error}'));
           }
           if (!snapshot.hasData) {
             return const Center(
@@ -67,6 +66,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                 ),
               )
               .toList();
+          categories.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
           if (categories.isEmpty) {
             return Center(
               child: Column(
@@ -130,7 +130,32 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                     category.name,
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  subtitle: Text(category.description),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(category.description),
+                      const SizedBox(height: 4),
+                      FutureBuilder<DocumentSnapshot>(
+                        future: _firestore.collection('users').doc(category.ownerId).get(),
+                        builder: (context, userSnap) {
+                          if (userSnap.connectionState == ConnectionState.waiting) {
+                            return const SizedBox(height: 14, child: LinearProgressIndicator(minHeight: 2));
+                          }
+                          String creatorName = 'Unknown';
+                          if (userSnap.hasData && userSnap.data!.exists) {
+                            final data = userSnap.data!.data() as Map<String, dynamic>;
+                            creatorName = (data['name'] as String?)?.trim().isNotEmpty == true
+                                ? data['name']
+                                : (data['email'] as String? ?? 'Unknown');
+                          }
+                          return Text(
+                            'By: $creatorName',
+                            style: const TextStyle(color: AppTheme.textSecondaryColor, fontSize: 12),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                   trailing: PopupMenuButton(
                     itemBuilder: (context) => [
                       const PopupMenuItem(
