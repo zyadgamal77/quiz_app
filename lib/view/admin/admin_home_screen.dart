@@ -112,6 +112,50 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     return '${date.day}/${date.month}/${date.year}';
   }
 
+  Future<void> _backfillOwnerId() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Starting backfill...')),
+      );
+
+      // Backfill categories
+      final categoriesSnap = await _firestore.collection('categories').get();
+      int updatedCategories = 0;
+      for (final doc in categoriesSnap.docs) {
+        final data = doc.data();
+        final ownerId = data['ownerId'];
+        if (ownerId == null || (ownerId is String && ownerId.isEmpty)) {
+          await doc.reference.update({'ownerId': uid});
+          updatedCategories++;
+        }
+      }
+
+      // Backfill quizzes
+      final quizzesSnap = await _firestore.collection('quizzes').get();
+      int updatedQuizzes = 0;
+      for (final doc in quizzesSnap.docs) {
+        final data = doc.data();
+        final ownerId = data['ownerId'];
+        if (ownerId == null || (ownerId is String && ownerId.isEmpty)) {
+          await doc.reference.update({'ownerId': uid});
+          updatedQuizzes++;
+        }
+      }
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Backfill done. Categories: $updatedCategories, Quizzes: $updatedQuizzes')),
+      );
+      setState(() {}); // refresh stats
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Backfill failed: $e')),
+      );
+    }
+  }
+
   Future<bool> _onWillPop(BuildContext context) async {
     final shouldPop = await showDialog<bool>(
       context: context,
@@ -197,6 +241,22 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               icon: const Icon(Icons.logout, color: Colors.white),
               onPressed: _signOut,
               tooltip: 'Logout',
+            ),
+            PopupMenuButton<String>(
+              onSelected: (value) async {
+                if (value == 'backfill') {
+                  await _backfillOwnerId();
+                }
+              },
+              itemBuilder: (_) => const [
+                PopupMenuItem(
+                  value: 'backfill',
+                  child: ListTile(
+                    leading: Icon(Icons.build_circle_outlined),
+                    title: Text('Backfill my data'),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
