@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/view/splash_screen/role_selection_screen.dart';
-import '../../theme/theme.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -103,12 +101,10 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                           ),
                         ),
-                        child: Container(
-                          child: Image.asset(
-                            'assets/images/splash.jpg',
-                            height: 300,
-                            width: 300,
-                          ),
+                        child: Image.asset(
+                          'assets/images/splash.jpg',
+                          height: 300,
+                          width: 300,
                         ),
                       ),
                       const SizedBox(height: 60),

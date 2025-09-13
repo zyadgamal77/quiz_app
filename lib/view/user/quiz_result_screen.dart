@@ -188,7 +188,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                "${scorePercentage}%",
+                                "$scorePercentage%",
                                 style: TextStyle(
                                   fontSize: 40,
                                   fontWeight: FontWeight.bold,

@@ -127,8 +127,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    final navigator = Navigator.of(context);
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldPop = await _onWillPop();
+        if (!mounted) return;
+        if (shouldPop) {
+          navigator.pop(result);
+        }
+      },
       child: Scaffold(
         backgroundColor: AppTheme.backgroundColor,
         appBar: AppBar(

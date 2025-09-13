@@ -173,8 +173,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _onWillPop(context),
+    final navigator = Navigator.of(context);
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldPop = await _onWillPop(context);
+        if (!mounted) return;
+        if (shouldPop) {
+          navigator.pop(result);
+        }
+      },
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
